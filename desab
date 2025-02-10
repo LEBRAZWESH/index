@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation de désabonnement</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        h1 { color: #d32f2f; }
+        p { font-size: 18px; }
+    </style>
+</head>
+<body>
+    <h1>Vous êtes désabonné(e)</h1>
+    <p>Vous ne recevrez plus d'emails de notre part.</p>
+</body>
+</html>
