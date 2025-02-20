@@ -38,11 +38,11 @@ from geopy.geocoders import Nominatim
 from geopy.distance import geodesic
 from geopy.exc import GeocoderTimedOut
 from typing import Any, Optional
+import requests
 
 # Configuration
 CONFIG_FILE = "config/settings.json"
 GEOCODE_CACHE_FILE = "cache/geocode_cache.json"
-LOG_FILE = "logs/booking_app.log"
 
 # Configuration globale du logging
 
@@ -302,6 +302,156 @@ class BookingApp(QMainWindow):
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
 
+    def save_action(self):
+        """
+        Exemple de fonction exécutée lors du clic sur "Enregistrer les modifications".
+        Affiche un message de confirmation pour l'utilisateur.
+        """
+        QMessageBox.information(self, "Enregistrer", "Les modifications ont bien été enregistrées.")
+
+    def create_toolbar(self):
+        """
+        Crée une barre d'outils avec des actions pour l'application.
+        """
+        toolbar = QToolBar("Outils", self)
+        self.addToolBar(Qt.TopToolBarArea, toolbar)
+
+        # Ajout d'une action pour ouvrir un fichier
+        open_action = QAction(QIcon("assets/open.png"), "Ouvrir", self)
+        open_action.setShortcut("Ctrl+O")
+        open_action.triggered.connect(self.open_file)
+        toolbar.addAction(open_action)
+
+        # Ajout d'une action pour enregistrer un fichier
+        save_action = QAction(QIcon("assets/save.png"), "Enregistrer", self)
+        save_action.setShortcut("Ctrl+S")
+        save_action.triggered.connect(self.save_action)
+        toolbar.addAction(save_action)
+
+        # Ajout d'une action pour annuler la dernière opération
+        undo_action = QAction(QIcon("assets/undo.png"), "Annuler", self)
+        undo_action.setShortcut("Ctrl+Z")
+        undo_action.triggered.connect(self.undo)
+        toolbar.addAction(undo_action)
+
+        # Ajout d'une action pour rétablir la dernière opération annulée
+        redo_action = QAction(QIcon("assets/redo.png"), "Rétablir", self)
+        redo_action.setShortcut("Ctrl+Y")
+        redo_action.triggered.connect(self.redo)
+        toolbar.addAction(redo_action)
+
+    def open_file(self):
+        """
+        Ouvre un fichier et charge son contenu dans l'application.
+        """
+        options = QFileDialog.Options()
+        options |= QFileDialog.ReadOnly
+        file_name, _ = QFileDialog.getOpenFileName(self, "Ouvrir un fichier", "", "Tous les fichiers (*);;Fichiers CSV (*.csv);;Fichiers Excel (*.xlsx)", options=options)
+        if file_name:
+            try:
+                if file_name.endswith('.csv'):
+                    self.load_csv(file_name)
+                elif file_name.endswith('.xlsx'):
+                    self.load_excel(file_name)
+                else:
+                    QMessageBox.warning(self, "Format de fichier non supporté", "Le format de fichier sélectionné n'est pas supporté.")
+            except Exception as e:
+                logging.error(f"Erreur lors de l'ouverture du fichier: {e}")
+                QMessageBox.critical(self, "Erreur", f"Une erreur est survenue lors de l'ouverture du fichier:\n{e}")
+
+    def undo(self):
+        """
+        Annule la dernière opération effectuée par l'utilisateur.
+        """
+        if not self.undo_stack:
+            QMessageBox.information(self, "Annuler", "Aucune opération à annuler.")
+            return
+        
+        self.undo_redo_in_progress = True
+        last_action = self.undo_stack.pop()
+        self.redo_stack.append(last_action)
+        
+        # Exécution de l'annulation en fonction du type d'action
+        if last_action['type'] == 'edit':
+            self.restore_last_values(last_action)
+        elif last_action['type'] == 'delete':
+            self.restore_deleted_row(last_action)
+        
+        self.undo_redo_in_progress = False
+
+    def redo(self):
+        """
+        Rétablit la dernière opération annulée par l'utilisateur.
+        """
+        if not self.redo_stack:
+            QMessageBox.information(self, "Rétablir", "Aucune opération à rétablir.")
+            return
+        
+        self.undo_redo_in_progress = True
+        last_action = self.redo_stack.pop()
+        self.undo_stack.append(last_action)
+        
+        # Exécution du rétablissement en fonction du type d'action
+        if last_action['type'] == 'edit':
+            self.apply_action(last_action)
+        elif last_action['type'] == 'delete':
+            self.remove_row(last_action['row'])
+        
+        self.undo_redo_in_progress = False
+
+    def apply_stylesheet(self):
+        """
+        Applique une feuille de style à l'application pour harmoniser l'apparence.
+        """
+        try:
+            with open("assets/DESIGN.qss", "r", encoding="utf-8") as style_file:
+                self.setStyleSheet(style_file.read())
+        except Exception as e:
+            print("Erreur lors du chargement du fichier de style:", e)
+
+    def load_excel(self, file_name):
+        """
+        Charge le contenu d'un fichier Excel dans l'application.
+        """
+        try:
+            df = pd.read_excel(file_name)
+            self.load_dataframe(df)
+        except Exception as e:
+            logging.error(f"Erreur lors du chargement du fichier Excel: {e}")
+            QMessageBox.critical(self, "Erreur", f"Une erreur est survenue lors du chargement du fichier Excel:\n{e}")
+
+    def load_logo(self):
+        """
+        Charge et affiche le logo de l'application.
+        """
+        logo_path = config.get("logo_path", "assets/logo.png")
+        if os.path.exists(logo_path):
+            self.logo = logo_path
+        else:
+            logging.warning(f"Logo non trouvé: {logo_path}")
+            self.logo = None
+
+    def cancel_action(self):
+        """
+        Exemple de fonction exécutée lors du clic sur "Annuler".
+        Affiche un message pour signaler l'annulation de l'action en cours.
+        """
+        QMessageBox.warning(self, "Annuler", "L'action a été annulée.")
+
+    def load_custom_font(self):
+        """
+        Charge une police personnalisée pour améliorer la lisibilité et l'esthétique de l'application.
+        """
+        font_path = os.path.join(os.path.dirname(__file__), "assets", "WorkSans-Medium.ttf")
+        font_id = QFontDatabase.addApplicationFont(font_path)
+
+        if font_id == -1:
+            logging.warning("Erreur lors du chargement de la police WorkSans-Medium.")
+            self.custom_font_family = "Arial"
+        else:
+            self.custom_font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
+            self.setFont(QFont(self.custom_font_family, 10))
+
     def build_search_query(self, row: dict) -> list:
         """Construit plusieurs variantes d'adresse en utilisant les colonnes détectées dynamiquement."""
         detected = self.detect_address_columns(row)
@@ -409,15 +559,6 @@ class BookingApp(QMainWindow):
         print(f"        🔍 Colonnes détectées : {detected}")
         return detected
 
-
-    def create_toolbar(self):
-        """
-        Crée la barre d'outils pour regrouper les actions fréquentes avec des icônes et des descriptions.
-        Cette barre améliore l'accès rapide aux fonctionnalités et apporte du feedback visuel.
-        """
-        # Code de création de toolbar à ajouter ici
-        pass
-
     def create_tabs(self):
         """
         Méthode pour créer et organiser plusieurs onglets.
@@ -434,19 +575,51 @@ class BookingApp(QMainWindow):
         # Code de raccourcis clavier à ajouter ici
         pass
 
-    def apply_stylesheet(self):
-        try:
-            with open(r"C:\booking_app\assets\DESIGN.qss", "r", encoding="utf-8") as style_file:
+def apply_stylesheet(self):
+    try:
+        # Attempt to load external stylesheet
+        qss_path = os.path.join(os.path.dirname(__file__), "assets", "DESIGN.qss")
+        if os.path.exists(qss_path):
+            with open(qss_path, "r", encoding="utf-8") as style_file:
                 self.setStyleSheet(style_file.read())
-        except Exception as e:
-            print("Erreur lors du chargement du fichier de style:", e)
-
-    def load_custom_font(self):
-        """
-        Charge une police personnalisée pour améliorer la lisibilité et l'esthétique de l'application.
-        """
-        # Implémentation de chargement de police personnalisée (à adapter selon l'emplacement réel des fichiers)
-        pass
+        else:
+            print(f"⚠️ Le fichier {qss_path} est introuvable. Le style par défaut sera appliqué.")
+    except Exception as e:
+        print("Erreur lors du chargement du fichier de style:", e)
+        # Apply default stylesheet if there's an error loading external file
+        self.setStyleSheet("""
+            QMainWindow {
+                background-color: #f0f0f0;
+            }
+            QTableWidget {
+                background-color: white;
+                alternate-background-color: #f7f7f7;
+                selection-background-color: #0078d7;
+                selection-color: white;
+                gridline-color: #e0e0e0;
+            }
+            QPushButton {
+                background-color: #0078d7;
+                color: white;
+                border: none;
+                padding: 5px 15px;
+                border-radius: 3px;
+            }
+            QPushButton:hover {
+                background-color: #005a9e;
+            }
+            QPushButton:pressed {
+                background-color: #004275;
+            }
+            QLineEdit {
+                padding: 5px;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+            }
+            QLabel {
+                color: #333;
+            }
+        """)
 
     def load_logo(self):
         """
@@ -693,7 +866,7 @@ class BookingApp(QMainWindow):
         for i in range(len(points) - 1):
             start = points[i]
             end = points[i + 1]
-            geometry, duration, distance = route_helpers.get_route(start, end)
+            geometry, duration, distance = self.get_route(start, end)
             if geometry:
                 PolyLine(geometry, color="blue", weight=5, opacity=0.7).add_to(m)
                 total_duration += duration
@@ -1993,42 +2166,6 @@ class BookingApp(QMainWindow):
         """Affiche l'itinéraire optimisé sur la carte"""
         # Implémentation pour afficher l'itinéraire optimisé sur la carte
         pass
-
-    def apply_stylesheet(self):
-        """Application du style visuel de l'application"""
-        self.setStyleSheet("""
-            QMainWindow {
-                background-color: #f0f0f0;
-            }
-            QTableWidget {
-                background-color: white;
-                alternate-background-color: #f7f7f7;
-                selection-background-color: #0078d7;
-                selection-color: white;
-                gridline-color: #e0e0e0;
-            }
-            QPushButton {
-                background-color: #0078d7;
-                color: white;
-                border: none;
-                padding: 5px 15px;
-                border-radius: 3px;
-            }
-            QPushButton:hover {
-                background-color: #005a9e;
-            }
-            QPushButton:pressed {
-                background-color: #004275;
-            }
-            QLineEdit {
-                padding: 5px;
-                border: 1px solid #ccc;
-                border-radius: 3px;
-            }
-            QLabel {
-                color: #333;
-            }
-        """)
 
     def show_error(self, message):
         """Affiche une boîte de dialogue d'erreur"""
