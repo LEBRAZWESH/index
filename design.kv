@@ -1,0 +1,124 @@
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+#:import MDCard kivymd.uix.card.MDCard
+#:import MDFillRoundFlatButton kivymd.uix.button.MDFillRoundFlatButton
+#:import MDDropdownMenu kivymd.uix.menu.MDDropdownMenu
+#:import MDBoxLayout kivymd.uix.boxlayout.MDBoxLayout
+#:import MDTextField kivymd.uix.textfield.MDTextField
+#:import MDTopAppBar kivymd.uix.toolbar.MDTopAppBar
+#:import MDLabel kivymd.uix.label.MDLabel
+
+<NoteInput@MDBoxLayout>:
+    orientation: "vertical"
+    size_hint_y: None
+    height: "80dp"
+    padding: "10dp"
+    spacing: "5dp"
+    canvas.before:
+        Color:
+            rgba: app.theme_cls.primary_light
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [10,]
+    MDTextField:
+        id: note_input
+        hint_text: "Texte de la note"
+        multiline: True
+        mode: "rectangle"
+        font_size: "18sp"
+        size_hint_y: None
+        height: "60dp"
+        background_color: 1,1,1,0.8
+
+ScreenManager:
+    id: screen_manager
+    transition: FadeTransition()
+
+    MainScreen:
+    NotesScreen:
+
+<MainScreen>:
+    name: "main"
+    canvas.before:
+        Color:
+            rgba: 0.95, 0.95, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    MDBoxLayout:
+        orientation: "vertical"
+
+        MDTopAppBar:
+            title: "Vas-y Frère !"
+            left_action_items: [["notebook", lambda x: app.open_notes_screen()]]
+            md_bg_color: app.theme_cls.primary_color
+            specific_text_color: 1, 1, 1, 1
+
+        MDBoxLayout:
+            orientation: "horizontal"
+            size_hint_y: None
+            height: "60dp"
+            padding: "10dp"
+            spacing: "10dp"
+            MDIcon:
+                id: recording_indicator
+                icon: "circle"
+                size_hint: None, None
+                size: "24dp", "24dp"
+                theme_text_color: "Custom"
+                text_color: 1, 0, 0, app.recording_opacity
+
+        ScrollView:
+            MDList:
+                id: folder_list
+                padding: "10dp"
+                spacing: "10dp"
+
+        Widget:
+            size_hint_y: None
+            height: "20dp"
+
+        MDFloatingActionButton:
+            icon: "microphone"
+            size_hint: None, None
+            size: "70dp", "70dp"
+            pos_hint: {"center_x": 0.5}
+            md_bg_color: app.theme_cls.primary_color
+            on_release: app.toggle_recording()
+
+        Widget:
+            size_hint_y: None
+            height: "20dp"
+
+        MDProgressBar:
+            id: recognition_progress
+            value: 0
+            max: 100
+            color: app.theme_cls.primary_color
+            size_hint_y: None
+            height: "6dp"
+
+<NotesScreen>:
+    name: "notes"
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: "10dp"
+
+        MDTopAppBar:
+            title: "Notes"
+            left_action_items: [["arrow-left", lambda x: app.go_back()]]
+            md_bg_color: app.theme_cls.primary_color
+            specific_text_color: 1, 1, 1, 1
+
+        ScrollView:
+            MDList:
+                id: note_list
+                spacing: "10dp"
+                padding: "10dp"

@@ -7,6 +7,8 @@ from datetime import datetime
 import vosk
 import pyaudio
 
+from kivy.lang import Builder
+
 from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.metrics import dp
@@ -22,78 +24,6 @@ from kivy.uix.boxlayout import BoxLayout
 from kivymd.uix.button import MDIconButton
 
 
-KV = '''
-<NoteInput@MDBoxLayout>:
-    orientation: "vertical"
-    size_hint_y: None
-    height: "60dp"
-
-    MDTextField:
-        id: note_input
-        hint_text: "Texte de la note"
-        multiline: True
-
-ScreenManager:
-    MainScreen:
-    NotesScreen:
-
-<MainScreen>:
-    name: "main"
-
-    BoxLayout:
-        orientation: "vertical"
-
-        MDTopAppBar:
-            title: "Vas-y Frère !"
-            md_bg_color: app.theme_cls.primary_color
-            right_action_items: [["notebook", lambda x: app.open_notes_screen()]]  # Suppression du texte "Notes"
-
-        BoxLayout:
-            size_hint_y: None
-            height: "50dp"
-            padding: "10dp"
-            spacing: "10dp"
-
-            MDIcon:
-                id: recording_indicator
-                icon: "circle"
-                size_hint: None, None
-                size: "200dp", "200dp"
-                theme_text_color: "Custom"
-                text_color: 1, 0, 0, app.recording_opacity
-
-        ScrollView:
-            MDList:
-                id: folder_list
-
-        Widget:  # Ajout d'un espace vide pour centrer le bouton
-
-        MDFloatingActionButton:
-            icon: "microphone"
-            size_hint: None, None
-            size: "200dp", "200dp"  # Agrandissement du bouton
-            pos_hint: {"center_x": 0.5, "center_y": 0.15}  # Ajustement de la position
-            md_bg_color: 0.2, 0.6, 1, 1  # Bleu plus visible
-            on_release: app.toggle_recording()
-
-        Widget:  # Équilibre l'affichage
-              
-<NotesScreen>:
-    name: "notes"
-
-    BoxLayout:
-        orientation: "vertical"
-
-        MDTopAppBar:
-            left_action_items: [["arrow-left", lambda x: app.go_back()]]  # Suppression du texte "Notes"
-
-        ScrollView:
-            MDList:
-                id: note_list
-                spacing: "10dp"
-                padding: "10dp"
-'''
-
 class MainScreen(Screen):
     pass
 
@@ -108,7 +38,7 @@ class FrereAssistantApp(MDApp):
         self.default_folder = "Notes"
         self.notes_file = "notes.txt"
         self.ensure_storage()
-        return Builder.load_string(KV)
+        return Builder.load_file('design.kv')
 
     def ensure_storage(self):
         os.makedirs(self.default_folder, exist_ok=True)
@@ -215,9 +145,13 @@ class FrereAssistantApp(MDApp):
             self.show_error(f"Erreur audio inconnue : {str(e)}")
             return
 
-        # Ajout d'un Event pour un meilleur contrôle de l'arrêt du thread
+        # Ajout d'une variable pour accumuler la transcription
+        self.transcript = ""
         self.recording_event = threading.Event()
         self.recording_event.clear()
+
+        self.progress_value = 0
+        Clock.schedule_interval(self.update_progress_bar, 0.1)
 
         self.recording = True
         self.recording_opacity = 1
@@ -230,20 +164,23 @@ class FrereAssistantApp(MDApp):
         self.audio_thread.start()
         Clock.schedule_interval(self.update_indicator, 0.5)
 
+    def update_progress_bar(self, dt):
+        # Animation simple : incrémentation de la barre de 0 à 100 se réinitialisant ensuite
+        self.progress_value += 2
+        if self.progress_value > 100:
+            self.progress_value = 0
+        self.root.get_screen("main").ids.recognition_progress.value = self.progress_value
+
     def process_audio(self):
         while self.recording and not self.recording_event.is_set():
             try:
                 data = self.stream.read(4096, exception_on_overflow=False)
-                # Vérifier que des données significatives sont présentes
-                if not data.strip():
-                    continue  
-
                 if self.recognizer.AcceptWaveform(data):
                     result = json.loads(self.recognizer.Result()).get('text', '').strip()
-                    if result and len(result.split()) > 1:
-                        Clock.schedule_once(lambda dt: self.save_note(result), 0)
+                    if result:
+                        # Accumuler la transcription au lieu de sauvegarder automatiquement la note
+                        self.transcript += " " + result
                 else:
-                    # Optionnel : traitement des segments partiels si besoin
                     pass
             except Exception as e:
                 Clock.schedule_once(lambda dt: self.show_error(f"Erreur traitement audio: {str(e)}"), 0)
@@ -264,6 +201,13 @@ class FrereAssistantApp(MDApp):
             # Attendre que le thread se termine proprement
             if hasattr(self, 'audio_thread') and self.audio_thread.is_alive():
                 self.audio_thread.join(timeout=1)
+            # Arrêter l'animation de la barre de progression et l'indicateur
+            Clock.unschedule(self.update_progress_bar)
+            Clock.unschedule(self.update_indicator)
+            # Sauvegarder la transcription accumulée lorsque l'utilisateur arrête manuellement l'enregistrement
+            if self.transcript.strip():
+                self.save_note(self.transcript.strip())
+                self.transcript = ""
             self.update_folder_list()
 
     def update_indicator(self, dt):
