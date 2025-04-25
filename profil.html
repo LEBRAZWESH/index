@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profil Utilisateur</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+
+    .phone-container {
+      width: 360px;
+      height: 640px;
+      position: relative;
+      overflow: auto;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      background: radial-gradient(circle at top, #0e0e2c, #000);
+      color: white;
+      text-align: center;
+      padding-top: 40px;
+    }
+
+    .avatar-img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 2px solid white;
+      object-fit: cover;
+      margin: 0 auto 12px;
+    }
+
+    .username {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .modifier-info {
+      font-size: 11px;
+      color: #aaa;
+      margin-bottom: 20px;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    .signature-box {
+      margin: 0 20px 20px;
+      font-size: 12px;
+      font-style: italic;
+      opacity: 0.85;
+    }
+
+    .badges {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      font-size: 18px;
+    }
+
+    .premium-status {
+      background: linear-gradient(to right, gold, goldenrod);
+      padding: 8px 16px;
+      border-radius: 24px;
+      margin: 0 auto 16px;
+      width: fit-content;
+      font-size: 14px;
+      font-weight: bold;
+      color: black;
+    }
+
+    .settings-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      margin-bottom: 30px;
+      cursor: pointer;
+    }
+
+    .settings-icon {
+      font-size: 22px;
+      margin-bottom: 2px;
+    }
+
+    .settings-label {
+      font-size: 12px;
+      color: white;
+    }
+
+    .settings-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      background: #111;
+      border-radius: 12px;
+      border: 1px solid gold;
+      padding: 20px;
+      z-index: 999;
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      color: white;
+    }
+
+    .settings-popup h3 {
+      margin: 0;
+      font-size: 14px;
+      color: gold;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .settings-popup ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: none;
+      font-size: 12px;
+    }
+
+    .settings-popup ul li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 30px;
+      height: 16px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #555;
+      transition: 0.4s;
+      border-radius: 16px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 12px;
+      width: 12px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    .toggle-switch input:checked + .slider {
+      background-color: gold;
+    }
+
+    .toggle-switch input:checked + .slider:before {
+      transform: translateX(14px);
+    }
+
+    .settings-popup.active {
+      display: flex;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 998;
+      display: none;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-container">
+    <img src="https://placekitten.com/120/120" class="avatar-img">
+    <div class="username">Rêvonaute Sélène</div>
+    <div class="modifier-info">(modifiable 1x/mois)</div>
+
+    <div class="stats">
+      <div>🌙 42 rêves</div>
+      <div>⭐ Premium</div>
+    </div>
+
+    <div class="signature-box">
+      "Navigue entre les étoiles de son inconscient, explorateur d'univers oubliés."
+    </div>
+
+    <div class="badges">
+      <div class="badge">🎖️</div>
+      <div class="badge">🌕</div>
+      <div class="badge">⭐</div>
+      <div class="badge">🧙‍♂️</div>
+      <div class="badge">🌟</div>
+    </div>
+
+    <div class="premium-status">Abonnement Premium actif</div>
+
+    <div class="settings-section" onclick="toggleSettings()">
+      <div class="settings-icon">⚙️</div>
+      <div class="settings-label">Paramètres</div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="toggleSettings()"></div>
+  <div class="settings-popup" id="settingsPopup">
+    <h3 onclick="toggleList(this)">🔔 Notifications personnalisables</h3>
+    <ul>
+      <li>Carte Mystique <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label></li>
+      <li>Inactivité <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label></li>
+      <li>Rituel Pleine Lune <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label></li>
+      <li>Rêve de la Semaine <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label></li>
+    </ul>
+
+    <h3 onclick="toggleList(this)">📬 Données & Confidentialité</h3>
+    <ul>
+      <li>Partage email <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label></li>
+      <li>Suppression <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label></li>
+    </ul>
+
+    <h3 onclick="toggleList(this)">💬 Interactions sociales</h3>
+    <ul>
+      <li>Likes <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label></li>
+      <li>Commentaires <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label></li>
+      <li>Favoris <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label></li>
+    </ul>
+
+    <h3 onclick="toggleList(this)">📄 Mentions légales</h3>
+    <ul>
+      <li>Éditeur <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label></li>
+      <li>Hébergeur <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label></li>
+      <li>Données perso <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label></li>
+      <li>Cookies <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label></li>
+    </ul>
+  </div>
+
+  <script>
+    function toggleSettings() {
+      document.getElementById('settingsPopup').classList.toggle('active');
+      document.getElementById('overlay').classList.toggle('active');
+    }
+
+    function toggleList(header) {
+      const next = header.nextElementSibling;
+      if (next && next.tagName === 'UL') {
+        next.style.display = next.style.display === 'block' ? 'none' : 'block';
+      }
+    }
+  </script>
+</body>
+</html>

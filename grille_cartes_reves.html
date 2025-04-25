@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grimoire - Accueil</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      font-family: Arial, sans-serif;
+    }
+    .phone-container {
+      width: 360px;
+      height: 640px;
+      margin: auto;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      background: radial-gradient(circle at center, #0e0e2c, #000);
+      padding: 20px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      overflow-y: scroll;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid white;
+      margin: 0 auto 10px;
+    }
+    .welcome {
+      text-align: center;
+      margin-bottom: 5px;
+    }
+    .signature {
+      text-align: center;
+      font-style: italic;
+      color: gold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 20px;
+    }
+    .orbes {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 20px;
+    }
+    .orbe {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: 2px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 12px;
+      padding: 8px;
+      position: relative;
+    }
+    .orbe .clé {
+      position: absolute;
+      bottom: -10px;
+      right: -10px;
+      font-size: 16px;
+      color: gold;
+    }
+    .rêves-grille {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding-bottom: 20px;
+    }
+    .carte-rêve {
+      background-color: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .carte-rêve img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 5px;
+      border: 1px solid white;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .popup-rêve {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 320px;
+      max-width: 90%;
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid white;
+      border-radius: 15px;
+      padding: 20px;
+      color: white;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      z-index: 100;
+    }
+    .popup-rêve h3 {
+      margin-top: 0;
+    }
+    .popup-close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .popup-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .popup-actions button {
+      background-color: rgba(255,255,255,0.1);
+      border: 1px solid white;
+      border-radius: 30px;
+      color: white;
+      padding: 8px 14px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .popup-actions button:hover {
+      background-color: rgba(0,200,255,0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-container">
+    <img src="https://media.giphy.com/media/f9k1tV7HyORcngKF8v/giphy.gif" alt="avatar" class="avatar">
+    <div class="welcome">Bienvenue, Rêvonaute Luna</div>
+    <div class="signature">"Exploratrice des songes oubliés" 🖋️</div>
+
+    <div class="orbes">
+      <div class="orbe">🔮<br>MiniStats</div>
+      <div class="orbe">📊<br>SuperStats <span class="clé">🔑</span></div>
+    </div>
+
+    <div class="rêves-grille">
+      <div class="carte-rêve" onclick="ouvrirPopup('Le Temple des Reflets', '#passage #miroir', 'https://media.giphy.com/media/l41m4v1JXb4ogj4IE/giphy.gif')">
+        <img src="https://media.giphy.com/media/l41m4v1JXb4ogj4IE/giphy.gif">
+        Rêve #1<br>#passage #miroir
+      </div>
+      <div class="carte-rêve" onclick="ouvrirPopup('Ascension de Lumière', '#lumière #saut', 'https://media.giphy.com/media/xT9IgpOa2kP7L6wG5K/giphy.gif')">
+        <img src="https://media.giphy.com/media/xT9IgpOa2kP7L6wG5K/giphy.gif">
+        Rêve #2<br>#lumière #saut
+      </div>
+      <div class="carte-rêve" onclick="ouvrirPopup('Envol Secret', '#envol #portail', 'https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif')">
+        <img src="https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif">
+        Rêve #3<br>#envol #portail
+      </div>
+      <div class="carte-rêve" onclick="ouvrirPopup('Fuite du Serpent', '#fuite #serpent', 'https://media.giphy.com/media/3orieZzVqLtjVmjv8k/giphy.gif')">
+        <img src="https://media.giphy.com/media/3orieZzVqLtjVmjv8k/giphy.gif">
+        Rêve #4<br>#fuite #serpent
+      </div>
+    </div>
+
+    <div class="popup-rêve" id="popupRêve">
+      <div class="popup-close" onclick="fermerPopup()">✖</div>
+      <h3 id="popupTitre"></h3>
+      <img id="popupImg" src="" style="width:120px;height:120px;border-radius:50%;margin:10px 0;">
+      <div id="popupTags"></div>
+      <div class="popup-actions">
+        <button>🎧 Écouter</button>
+        <button>📊 Analyser</button>
+        <button>📤 Partager</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function ouvrirPopup(titre, tags, img) {
+      document.getElementById("popupTitre").innerText = titre;
+      document.getElementById("popupTags").innerText = tags;
+      document.getElementById("popupImg").src = img;
+      document.getElementById("popupRêve").style.display = "flex";
+    }
+    function fermerPopup() {
+      document.getElementById("popupRêve").style.display = "none";
+    }
+  </script>
+</body>
+</html>
