@@ -304,6 +304,22 @@
         cursor: pointer;
     }
 
+    .dream-item.analyzing .dream-thumb video {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        min-width: 100%;
+        min-height: 100%;
+        object-fit: cover;
+    }
+
+    .dream-item.analyzing .dream-thumb {
+        height: 100px;
+        overflow: hidden;
+        position: relative;
+    }
+
     .dream-actions-container .icon-standard:hover,
     .dream-actions-container .icon-orb:hover {
         background: rgba(139, 92, 246, 0.4);
@@ -1190,7 +1206,7 @@
         justify-content: center;
         align-items: center;
         background: rgba(0, 0, 0, 0.85);
-        backdrop-filter: blur(10px);
+        backdrop-filter: none;
     }
 
     .perspective-container.active {
@@ -1212,10 +1228,12 @@
         width: 100%;
         height: 100%;
         backface-visibility: hidden;
-        background: rgba(15, 15, 30, 0.9);
+        background: rgba(15, 15, 30, 0.4); /* Restaure le fond original */
         border-radius: 16px;
-        border: 1px solid rgba(139, 92, 246, 0.3);
-        box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
+        border: 1px solid rgba(139, 92, 246, 0.15);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; /* Empêche le débordement du contenu */
     }
 
     /* Face arrière de la carte */
@@ -1224,14 +1242,15 @@
         width: 100%;
         height: 100%;
         backface-visibility: hidden;
-        background: linear-gradient(135deg, rgba(15, 15, 30, 0.95), rgba(30, 20, 60, 0.95));
+        background: rgba(15, 15, 30, 0.9);
         border-radius: 16px;
-        border: 1px solid rgba(139, 92, 246, 0.3);
         transform: rotateY(180deg);
         padding: 20px;
         display: flex;
         flex-direction: column;
-        gap: 15px;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid rgba(139, 92, 246, 0.15);
     }
 
     /* Animations */
@@ -1302,6 +1321,124 @@
         font-size: 1.1rem;
         color: #e9d5ff;
     }
+
+    /* Overlay pour l'analyse */
+        .analysis-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none; /* Support Safari */
+                z-index: 1000;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.4s ease, visibility 0.4s ease;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+        }
+
+    .analysis-overlay.visible {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Container pour la carte en analyse */
+        .dream-item.analyzing {
+                position: fixed;
+                z-index: 1001;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 280px;
+                height: 400px;
+                margin: 0;
+                transform-style: preserve-3d;
+                animation: cardRotation 8s linear infinite;
+                background: transparent;
+                /* Ajout d'une ombre pour améliorer la visibilité */
+                box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+        }
+
+        /* Assurer que les faces de la carte restent bien visibles */
+        .dream-item.analyzing .card-front,
+        .dream-item.analyzing .card-back {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                backface-visibility: hidden;
+                background: rgba(15, 15, 30, 0.95); /* Fond plus opaque */
+                border-radius: 16px;
+                border: 1px solid rgba(139, 92, 246, 0.3); /* Bordure plus visible */
+                box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+        }
+
+        /* Ajustement de l'animation pour une meilleure visibilité */
+        @keyframes cardRotation {
+                0% {
+                        transform: translate(-50%, -50%) rotateY(0deg);
+                }
+                100% {
+                        transform: translate(-50%, -50%) rotateY(360deg);
+                }
+        }
+
+        /* S'assurer que le contenu reste lisible pendant la rotation */
+        .dream-item.analyzing .dream-content,
+        .dream-item.analyzing .stats-content {
+                color: #fff;
+                text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        }
+
+
+    /* Bouton de fermeture */
+    .close-analysis {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        width: 30px;
+        height: 30px;
+        background: rgba(139, 92, 246, 0.3);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 1002;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+        transition: background 0.3s ease;
+    }
+
+    .close-analysis:hover {
+        background: rgba(139, 92, 246, 0.5);
+    }
+
+    /* Contenu des statistiques */
+        .stats-content {
+                color: white;
+                text-align: center;
+                padding: 20px;
+                background: rgba(15, 15, 30, 0.95);
+                border-radius: 12px;
+        }
+
+    .stats-content h3 {
+        margin-bottom: 15px;
+        color: #e9d5ff;
+    }
+
+        .stats-item {
+                margin: 10px 0;
+                padding: 8px;
+                background: rgba(139, 92, 246, 0.2);
+                border-radius: 8px;
+                border: 1px solid rgba(139, 92, 246, 0.2);
+                box-shadow: 0 0 10px rgba(139, 92, 246, 0.1);
+        }
 
     /* Animation de comet */
     .comet {
@@ -1704,6 +1841,44 @@
         // Initialiser l'analyse des cartes quand le DOM est chargé
         document.addEventListener('DOMContentLoaded', initializeCardAnalysis);
 
+        // Fonction pour démarrer l'analyse
+        function startAnalysis(dreamCard) {
+                const overlay = document.createElement('div');
+                overlay.className = 'analysis-overlay';
+                document.body.appendChild(overlay);
+
+                const closeButton = document.createElement('button');
+                closeButton.className = 'close-analysis';
+                closeButton.innerHTML = '×';
+                overlay.appendChild(closeButton);
+
+                dreamCard.classList.add('analyzing');
+                overlay.classList.add('visible');
+
+                // Gestionnaire pour fermer l'analyse
+                function closeAnalysis() {
+                        dreamCard.classList.remove('analyzing');
+                        overlay.classList.remove('visible');
+                        setTimeout(() => overlay.remove(), 400); // Attendre la fin de l'animation
+                }
+
+                closeButton.addEventListener('click', closeAnalysis);
+                overlay.addEventListener('click', (e) => {
+                        if (e.target === overlay) closeAnalysis();
+                });
+        }
+
+        // Ajouter les écouteurs d'événements aux boutons d'analyse
+        document.querySelectorAll('.analyze-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const dreamCard = e.target.closest('.dream-item');
+                        if (dreamCard) {
+                                startAnalysis(dreamCard);
+                        }
+                });
+        });
+
 
         // Créer les étoiles
         function createStars() {
@@ -1836,26 +2011,38 @@
                 <!-- Dream 1 -->
                 <div class="dream-block">
                         <div class="dream-item" data-id="dream1">
-                                <div class="select-indicator" onclick="toggleDreamSelection(this)"></div>
-                                <div class="dream-thumb">
-                                        <video autoplay muted loop playsinline width="400" height="320">
-                                                <source src="assets/bulle_aile_grimoire.webm" type="video/webm">
-                                                Ton navigateur ne supporte pas la vidéo HTML5.
-                                        </video>
-                                </div>
-                                <div class="dream-content">
-                                        <h3 class="dream-title">La forêt aux étoiles</h3>
-                                        <div class="dream-date">12 avril 2025</div>
-                                        <div class="dream-tags">
-                                                <span class="dream-tag">✨ apaisé</span>
-                                                <span class="dream-tag">💭 lucide</span>
+                                <!-- Face avant -->
+                                <div class="card-front">
+                                        <div class="select-indicator" onclick="toggleDreamSelection(this)"></div>
+                                        <div class="dream-thumb">
+                                                <video autoplay muted loop playsinline width="400" height="320">
+                                                        <source src="assets/bulle_aile_grimoire.webm" type="video/webm">
+                                                        Ton navigateur ne supporte pas la vidéo HTML5.
+                                                </video>
+                                        </div>
+                                        <div class="dream-content">
+                                                <h3 class="dream-title">La forêt aux étoiles</h3>
+                                                <div class="dream-date">12 avril 2025</div>
+                                                <div class="dream-tags">
+                                                        <span class="dream-tag">✨ apaisé</span>
+                                                        <span class="dream-tag">💭 lucide</span>
+                                                </div>
+                                        </div>
+                                        <div class="dream-actions-container">
+                                                <img src="assets/icone_3.png" alt="Écouter" class="icon-standard" onclick="listenToDream(this)">
+                                                <img src="assets/orbe_analyser_un_reve.png" alt="Analyser" class="icon-orb analyze-button">
+                                                <img src="assets/icone_19.png" alt="Options" class="icon-standard">
                                         </div>
                                 </div>
-                                <!-- Les actions sont maintenant intégrées dans la carte -->
-                                <div class="dream-actions-container">
-                                        <img src="assets/icone_3.png" alt="Écouter" class="icon-standard" onclick="listenToDream(this)">
-                                        <img src="assets/orbe_analyser_un_reve.png" alt="Analyser" class="icon-orb">
-                                        <img src="assets/icone_19.png" alt="Options" class="icon-standard">
+                                <!-- Face arrière (analyse) -->
+                                <div class="card-back">
+                                        <div class="stats-content">
+                                                <h3>Analyse du Rêve</h3>
+                                                <div class="stats-item">Durée: 8 heures</div>
+                                                <div class="stats-item">Clarté: 85%</div>
+                                                <div class="stats-item">Émotions: Positives</div>
+                                                <div class="stats-item">Thèmes principaux: Nature, Mystère</div>
+                                        </div>
                                 </div>
                         </div>
                 </div>
@@ -1863,26 +2050,38 @@
                 <!-- Dream 2 -->
                 <div class="dream-block">
                         <div class="dream-item" data-id="dream2">
-                                <div class="select-indicator" onclick="toggleDreamSelection(this)"></div>
-                                <div class="dream-thumb">
-                                        <video autoplay muted loop playsinline width="400" height="320">
-                                                <source src="assets/bulle_aile_grimoire.webm" type="video/webm">
-                                                Ton navigateur ne supporte pas la vidéo HTML5.
-                                        </video>
-                                </div>
-                                <div class="dream-content">
-                                        <h3 class="dream-title">Le gouffre</h3>
-                                        <div class="dream-date">12 avril 2025</div>
-                                        <div class="dream-tags">
-                                                <span class="dream-tag">✨ apaisé</span>
-                                                <span class="dream-tag">💭 lucide</span>
+                                <!-- Face avant -->
+                                <div class="card-front">
+                                        <div class="select-indicator" onclick="toggleDreamSelection(this)"></div>
+                                        <div class="dream-thumb">
+                                                <video autoplay muted loop playsinline width="400" height="320">
+                                                        <source src="assets/bulle_aile_grimoire.webm" type="video/webm">
+                                                        Ton navigateur ne supporte pas la vidéo HTML5.
+                                                </video>
+                                        </div>
+                                        <div class="dream-content">
+                                                <h3 class="dream-title">Le gouffre</h3>
+                                                <div class="dream-date">12 avril 2025</div>
+                                                <div class="dream-tags">
+                                                        <span class="dream-tag">✨ apaisé</span>
+                                                        <span class="dream-tag">💭 lucide</span>
+                                                </div>
+                                        </div>
+                                        <div class="dream-actions-container">
+                                                <img src="assets/icone_3.png" alt="Écouter" class="icon-standard" onclick="listenToDream(this)">
+                                                <img src="assets/orbe_analyser_un_reve.png" alt="Analyser" class="icon-orb analyze-button">
+                                                <img src="assets/icone_19.png" alt="Options" class="icon-standard">
                                         </div>
                                 </div>
-                                <!-- Les actions sont maintenant intégrées dans la carte -->
-                                <div class="dream-actions-container">
-                                        <img src="assets/icone_3.png" alt="Écouter" class="icon-standard" onclick="listenToDream(this)">
-                                        <img src="assets/orbe_analyser_un_reve.png" alt="Analyser" class="icon-orb">
-                                        <img src="assets/icone_19.png" alt="Options" class="icon-standard">
+                                <!-- Face arrière (analyse) -->
+                                <div class="card-back">
+                                        <div class="stats-content">
+                                                <h3>Analyse du Rêve</h3>
+                                                <div class="stats-item">Durée: 6 heures</div>
+                                                <div class="stats-item">Clarté: 90%</div>
+                                                <div class="stats-item">Émotions: Intenses</div>
+                                                <div class="stats-item">Thèmes principaux: Profondeur, Exploration</div>
+                                        </div>
                                 </div>
                         </div>
                 </div>
@@ -1890,26 +2089,38 @@
                 <!-- Dream 3 -->
                 <div class="dream-block">
                         <div class="dream-item" data-id="dream3">
-                                <div class="select-indicator" onclick="toggleDreamSelection(this)"></div>
-                                <div class="dream-thumb">
-                                        <video autoplay muted loop playsinline width="400" height="320">
-                                                <source src="assets/bulle_aile_grimoire.webm" type="video/webm">
-                                                Ton navigateur ne supporte pas la vidéo HTML5.
-                                        </video>
-                                </div>
-                                <div class="dream-content">
-                                        <h3 class="dream-title">Le passage</h3>
-                                        <div class="dream-date">12 avril 2025</div>
-                                        <div class="dream-tags">
-                                                <span class="dream-tag">✨ apaisé</span>
-                                                <span class="dream-tag">💭 lucide</span>
+                                <!-- Face avant -->
+                                <div class="card-front">
+                                        <div class="select-indicator" onclick="toggleDreamSelection(this)"></div>
+                                        <div class="dream-thumb">
+                                                <video autoplay muted loop playsinline width="400" height="320">
+                                                        <source src="assets/bulle_aile_grimoire.webm" type="video/webm">
+                                                        Ton navigateur ne supporte pas la vidéo HTML5.
+                                                </video>
+                                        </div>
+                                        <div class="dream-content">
+                                                <h3 class="dream-title">Le monstre du placard</h3>
+                                                <div class="dream-date">12 avril 2025</div>
+                                                <div class="dream-tags">
+                                                        <span class="dream-tag">✨ apaisé</span>
+                                                        <span class="dream-tag">💭 lucide</span>
+                                                </div>
+                                        </div>
+                                        <div class="dream-actions-container">
+                                                <img src="assets/icone_3.png" alt="Écouter" class="icon-standard" onclick="listenToDream(this)">
+                                                <img src="assets/orbe_analyser_un_reve.png" alt="Analyser" class="icon-orb analyze-button">
+                                                <img src="assets/icone_19.png" alt="Options" class="icon-standard">
                                         </div>
                                 </div>
-                                <!-- Les actions sont maintenant intégrées dans la carte -->
-                                <div class="dream-actions-container">
-                                        <img src="assets/icone_3.png" alt="Écouter" class="icon-standard" onclick="listenToDream(this)">
-                                        <img src="assets/orbe_analyser_un_reve.png" alt="Analyser" class="icon-orb">
-                                        <img src="assets/icone_19.png" alt="Options" class="icon-standard">
+                                <!-- Face arrière (analyse) -->
+                                <div class="card-back">
+                                        <div class="stats-content">
+                                                <h3>Analyse du Rêve</h3>
+                                                <div class="stats-item">Durée: 6 heures</div>
+                                                <div class="stats-item">Clarté: 90%</div>
+                                                <div class="stats-item">Émotions: Intenses</div>
+                                                <div class="stats-item">Thèmes principaux: Profondeur, Exploration</div>
+                                        </div>
                                 </div>
                         </div>
                 </div>
@@ -1917,26 +2128,38 @@
                 <!-- Dream 4 -->
                 <div class="dream-block">
                         <div class="dream-item" data-id="dream4">
-                                <div class="select-indicator" onclick="toggleDreamSelection(this)"></div>
-                                <div class="dream-thumb">
-                                        <video autoplay muted loop playsinline width="400" height="320">
-                                                <source src="assets/bulle_aile_grimoire.webm" type="video/webm">
-                                                Ton navigateur ne supporte pas la vidéo HTML5.
-                                        </video>
-                                </div>
-                                <div class="dream-content">
-                                        <h3 class="dream-title">Le soulier de chiffon</h3>
-                                        <div class="dream-date">12 avril 2025</div>
-                                        <div class="dream-tags">
-                                                <span class="dream-tag">✨ apaisé</span>
-                                                <span class="dream-tag">💭 lucide</span>
+                                <!-- Face avant -->
+                                <div class="card-front">
+                                        <div class="select-indicator" onclick="toggleDreamSelection(this)"></div>
+                                        <div class="dream-thumb">
+                                                <video autoplay muted loop playsinline width="400" height="320">
+                                                        <source src="assets/bulle_aile_grimoire.webm" type="video/webm">
+                                                        Ton navigateur ne supporte pas la vidéo HTML5.
+                                                </video>
+                                        </div>
+                                        <div class="dream-content">
+                                                <h3 class="dream-title">Carpentra</h3>
+                                                <div class="dream-date">12 avril 2025</div>
+                                                <div class="dream-tags">
+                                                        <span class="dream-tag">✨ apaisé</span>
+                                                        <span class="dream-tag">💭 lucide</span>
+                                                </div>
+                                        </div>
+                                        <div class="dream-actions-container">
+                                                <img src="assets/icone_3.png" alt="Écouter" class="icon-standard" onclick="listenToDream(this)">
+                                                <img src="assets/orbe_analyser_un_reve.png" alt="Analyser" class="icon-orb analyze-button">
+                                                <img src="assets/icone_19.png" alt="Options" class="icon-standard">
                                         </div>
                                 </div>
-                                <!-- Les actions sont maintenant intégrées dans la carte -->
-                                <div class="dream-actions-container">
-                                        <img src="assets/icone_3.png" alt="Écouter" class="icon-standard" onclick="listenToDream(this)">
-                                        <img src="assets/orbe_analyser_un_reve.png" alt="Analyser" class="icon-orb">
-                                        <img src="assets/icone_19.png" alt="Options" class="icon-standard">
+                                <!-- Face arrière (analyse) -->
+                                <div class="card-back">
+                                        <div class="stats-content">
+                                                <h3>Analyse du Rêve</h3>
+                                                <div class="stats-item">Durée: 6 heures</div>
+                                                <div class="stats-item">Clarté: 90%</div>
+                                                <div class="stats-item">Émotions: Intenses</div>
+                                                <div class="stats-item">Thèmes principaux: Profondeur, Exploration</div>
+                                        </div>
                                 </div>
                         </div>
                 </div>
