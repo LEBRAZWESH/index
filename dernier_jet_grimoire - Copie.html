@@ -292,7 +292,7 @@
     .dream-actions-container {
         display: flex;
         justify-content: center;
-        gap: 12px;
+        gap: 8px;
         padding: 8px 0;
         align-items: center;
         margin-top: auto; /* Pousse les actions vers le bas */
@@ -300,9 +300,8 @@
     }
 
     .dream-actions-container .icon-standard {
-        width: 32px;
-        height: 32px;
-        background: rgba(139, 92, 246, 0.2);
+        width: 38px;
+        height: 38px;
         padding: 6px;
         border-radius: 50%;
         transition: all 0.3s ease;
@@ -339,9 +338,8 @@
 
     .dream-actions-container .icon-standard:hover,
     .dream-actions-container .icon-orb:hover {
-        background: rgba(139, 92, 246, 0.4);
+        background: rgba(139, 92, 246, 0.9);
         transform: scale(1.1);
-        box-shadow: 0 6px 14px rgba(139, 92, 246, 0.5);
     }
 
     
@@ -585,10 +583,10 @@
 
     .avatar-aura {
         position: absolute;
-        width: 150%;
-        height: 150%;
-        top: -25%;
-        left: -25%;
+        width: 120%;
+        height: 120%;
+        top: -10%;
+        left: -10%;
         border-radius: 50%;
         background: conic-gradient(
             from 45deg,
@@ -605,10 +603,10 @@
 
     .avatar-outer-glow {
         position: absolute;
-        width: 180%;
-        height: 180%;
-        top: -40%;
-        left: -40%;
+        width: 120%;
+        height: 120%;
+        top: -20%;
+        left: -20%;
         border-radius: 50%;
         background: radial-gradient(
             circle,
@@ -686,35 +684,7 @@
     .avatar-container {
         animation: avatarEntrance 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     }
-        
-    /* Bouton d'ajout flottant */
-    .add-dream {
-      position: fixed;
-      bottom: 80px;
-      right: 20px;
-      width: 50px;
-      height: 50px;
-      background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    
-    .add-dream:hover {
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.6);
-    }
-    
-    .add-dream img {
-      width: 24px;
-      height: 24px;
-    }
-    
+            
     .notch {
       position: absolute;
       top: 0;
@@ -1262,7 +1232,6 @@
         color: white;
         z-index: 1;
     }
-
     /* Animations */
     @keyframes cardZoomIn {
         0% {
@@ -1820,74 +1789,117 @@
         }
 
         // Fonction pour gérer l'analyse d'une carte
-        function initializeCardAnalysis(dreamCard) {
+        function initializeCardAnalysis() {
+                const analyzeButtons = document.querySelectorAll('.icon-standard[data-action="analyze"]');
                 const perspectiveContainer = document.querySelector('.perspective-container');
+                const closeButton = document.querySelector('.close-analysis');
 
-                // Créer la face avant proprement
-                const originalThumb = dreamCard.querySelector('.dream-thumb').cloneNode(true);
-                const originalContent = dreamCard.querySelector('.dream-content').cloneNode(true);
-                const originalActions = dreamCard.querySelector('.dream-actions-container').cloneNode(true);
+                analyzeButtons.forEach(button => {
+                        button.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                const dreamCard = button.closest('.dream-item');
+                                const cardClone = dreamCard.cloneNode(true);
+                                
+                                // Préparer la carte pour l'animation
+                                cardClone.classList.add('analyzing');
+                                
+                                // Créer la structure front/back
+                                const cardFront = document.createElement('div');
+                                cardFront.className = 'card-front';
 
-                const cardFront = document.createElement('div');
-                cardFront.className = 'card-front';
-                cardFront.appendChild(originalThumb);
-                cardFront.appendChild(originalContent);
-                cardFront.appendChild(originalActions);
+                                // Copier les enfants de dreamCard dans cardFront
+                                [...dreamCard.children].forEach(child => {
+                                        cardFront.appendChild(child.cloneNode(true));
+                                });
 
-                // Créer la face arrière
-                const cardBack = document.createElement('div');
-                cardBack.className = 'card-back';
-                cardBack.innerHTML = `
-                        <div class="stats-content">
-                                <h3>Analyse du Rêve</h3>
-                                <div class="stats-item">Durée: 8 heures</div>
-                                <div class="stats-item">Clarté: 85%</div>
-                                <div class="stats-item">Émotions: Positives</div>
-                                <div class="stats-item">Thèmes principaux: Nature, Mystère</div>
-                        </div>
-                `;
+                                const cardBack = document.createElement('div');
+                                cardBack.className = 'card-back';
+                                cardBack.innerHTML = `
+                                        <div class="stats-content">
+                                                <h3>Analyse du Rêve</h3>
+                                                <div class="stats-item">Durée: 8 heures</div>
+                                                <div class="stats-item">Clarté: 85%</div>
+                                                <div class="stats-item">Émotions: Positives</div>
+                                                <div class="stats-item">Thèmes principaux: Nature, Mystère</div>
+                                        </div>
+                                `;
 
-                // Flipper et container
-                const flipper = document.createElement('div');
-                flipper.className = 'flipper';
-                flipper.style.transformStyle = 'preserve-3d';
-                flipper.style.transition = 'transform 1s';
-                flipper.style.transform = 'rotateY(180deg)';
-                flipper.appendChild(cardFront);
-                flipper.appendChild(cardBack);
+                                // Conteneur de la carte à double face avec perspective propre
+                                const flipContainer = document.createElement('div');
+                                flipContainer.className = 'flip-container';
+                                flipContainer.style.perspective = '1000px';
 
-                const flipContainer = document.createElement('div');
-                flipContainer.className = 'flip-container';
-                flipContainer.appendChild(flipper);
+                                const flipper = document.createElement('div');
+                                flipper.className = 'flipper';
+                                flipper.style.transformStyle = 'preserve-3d';
+                                flipper.style.transition = 'transform 1s';
+                                flipper.style.transform = 'rotateY(180deg)';
 
-                // Ajouter un bouton de fermeture
-                const closeButton = document.createElement('button');
-                closeButton.className = 'close-analysis';
-                closeButton.innerHTML = '&times;';
-                flipContainer.appendChild(closeButton);
+                                flipper.appendChild(cardFront);
+                                flipper.appendChild(cardBack);
+                                flipContainer.appendChild(flipper);
 
+                                // Afficher la carte dans la perspective
+                                perspectiveContainer.innerHTML = '';
+                                perspectiveContainer.appendChild(flipContainer);
+                                perspectiveContainer.classList.add('active');
+                        });
+                });
+
+                // Fermer l'analyse
                 closeButton.addEventListener('click', () => {
                         perspectiveContainer.classList.remove('active');
                 });
 
-                // Affichage
-                perspectiveContainer.innerHTML = '';
-                perspectiveContainer.appendChild(flipContainer);
-                perspectiveContainer.classList.add('active');
+                // Fermer l'analyse en cliquant en dehors de la carte
+                perspectiveContainer.addEventListener('click', (e) => {
+                        if (e.target === perspectiveContainer) {
+                                perspectiveContainer.classList.remove('active');
+                        }
+                });
         }
 
-        // Ajouter les écouteurs après que le DOM est chargé
-        document.addEventListener('DOMContentLoaded', () => {
-                document.querySelectorAll('.analyze-button').forEach(button => {
-                        button.addEventListener('click', (e) => {
-                                e.stopPropagation();
-                                const dreamCard = e.target.closest('.dream-item');
-                                if (dreamCard) {
-                                        initializeCardAnalysis(dreamCard);
-                                }
-                        });
+        // Initialiser l'analyse des cartes quand le DOM est chargé
+        document.addEventListener('DOMContentLoaded', initializeCardAnalysis);
+
+        // Fonction pour démarrer l'analyse
+        function startAnalysis(dreamCard) {
+                const overlay = document.createElement('div');
+                overlay.className = 'analysis-overlay';
+                document.body.appendChild(overlay);
+
+                const closeButton = document.createElement('button');
+                closeButton.className = 'close-analysis';
+                closeButton.innerHTML = '×';
+                overlay.appendChild(closeButton);
+
+                dreamCard.classList.add('analyzing');
+                overlay.classList.add('visible');
+
+                // Gestionnaire pour fermer l'analyse
+                function closeAnalysis() {
+                        dreamCard.classList.remove('analyzing');
+                        overlay.classList.remove('visible');
+                        setTimeout(() => overlay.remove(), 400); // Attendre la fin de l'animation
+                }
+
+                closeButton.addEventListener('click', closeAnalysis);
+                overlay.addEventListener('click', (e) => {
+                        if (e.target === overlay) closeAnalysis();
+                });
+        }
+
+        // Ajouter les écouteurs d'événements aux boutons d'analyse
+        document.querySelectorAll('.analyze-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const dreamCard = e.target.closest('.dream-item');
+                        if (dreamCard) {
+                                startAnalysis(dreamCard);
+                        }
                 });
         });
+
 
         // Créer les étoiles
         function createStars() {
@@ -1973,7 +1985,7 @@
     <div class="app-content">
       <div class="stars"></div>
       <header>
-            <h1>.</h1>
+            <h1>&nbsp;</h1>
             <!-- Nouveau conteneur pour l'avatar -->
             <div class="avatar-container">
                   <div class="avatar-aura"></div>
@@ -2117,10 +2129,6 @@
                                 </div>
                 </div>
       </div>
-    
-    <!-- Bouton d'ajout flottant -->
-    <div class="add-dream" onclick="addNewDream()">
-      <img src="assets/icone_3.png" alt="Ajouter">
     </div>
   <!-- Pop-up audio caché -->
   <div class="audio-popup">
