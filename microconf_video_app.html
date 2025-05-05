@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MicroConf' - Capsules vidéo oniriques</title>
+    <style>
+        @font-face {
+            font-family: 'AVANGMI';
+            src: url('typo/AVANGMI.TTF') format('truetype');
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'AVANGMI', sans-serif;
+        }
+        
+        body {
+            background-color: #111;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        .phone-container {
+            width: 360px;
+            height: 640px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 30px;
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
+        }
+        
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('assets/fondlab.png');
+            background-size: cover;
+            filter: brightness(0.7);
+            z-index: -1;
+        }
+                
+        .app-container {
+            height: 100%;
+            overflow-y: auto;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+        }
+                
+    .logo {
+        font-size: 28px;
+        font-weight: bold;
+        color: #ffffff; /* blanc pur */
+        text-shadow:
+            0 0 1px #ffffff,
+            0 0 2px #00f0ff,
+            0 0 6px #00cfff,
+            0 0 15px #009dff,
+            0 0 25px #0066ff,
+            0 0 35px #0040ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+                                
+        .tag-line {
+            font-size: 16px;
+            font-style: italic;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 0 0 8px rgba(191, 64, 191, 0.5);
+        }
+        
+        .video-container {
+            margin-top: 15px;
+        }
+        
+    .video-item {
+        background: rgba(25, 25, 66, 0.5);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        margin-bottom: 20px;
+        box-shadow: none; /* pas de glow au repos */
+        transition: transform 0.2s, box-shadow 0.2s, border 0.2s;
+        cursor: pointer;
+        overflow: hidden;
+    }
+
+    .video-item:hover,
+    .video-item.active {
+        transform: translateY(-3px);
+        border: 1px solid #00f0ff; /* renforcement de la bordure */
+        box-shadow:
+        box-shadow:
+            0 0 4px #00dfff,
+            0 0 8px #009dff,
+            0 0 15px #0077ff;
+    }
+        
+        .video-thumbnail {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            overflow: hidden;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .video-thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .video-duration {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .video-play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .video-thumbnail:hover .video-play-overlay {
+            opacity: 1;
+        }
+        
+        .video-play-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(191, 64, 191, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+        }
+        
+        .video-info {
+            padding: 15px;
+        }
+        
+        .video-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(191, 64, 191, 0.5);
+        }
+        
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .video-details {
+            flex: 1;
+        }
+        
+        .video-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        
+        .video-creator {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .video-views {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+        
+        .views-icon {
+            margin-right: 5px;
+        }
+        
+        .category-tag {
+            background: rgba(138, 43, 226, 0.3);
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-right: 6px;
+            border: 1px solid rgba(191, 64, 191, 0.3);
+        }
+        
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(25, 25, 66, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .tab.active {
+            background: rgba(138, 43, 226, 0.5);
+        }
+        
+        .tab-icon {
+            margin-bottom: 5px;
+        }
+        
+        .now-playing {
+            position: fixed;
+            bottom: 20px;
+            left: 15px;
+            right: 15px;
+            background: rgba(25, 25, 66, 0.8);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(191, 64, 191, 0.5);
+            box-shadow: 0 -4px 20px rgba(83, 24, 139, 0.4);
+        }
+        
+        .now-playing-thumbnail {
+            width: 60px;
+            height: 40px;
+            border-radius: 8px;
+            margin-right: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(191, 64, 191, 0.5);
+            position: relative;
+        }
+        
+        .now-playing-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .now-playing-info {
+            flex: 1;
+        }
+        
+        .now-playing-title {
+            font-size: 14px;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .now-playing-creator {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .now-playing-controls {
+            display: flex;
+            align-items: center;
+        }
+        
+        .now-playing-button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #8a2be2, #ff69b4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(191, 64, 191, 0.5);
+            margin-right: 8px;
+        }
+        
+        .next-button {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(138, 43, 226, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid rgba(191, 64, 191, 0.3);
+        }
+        
+        .progress-bar-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 30%;
+            background: linear-gradient(90deg, #8a2be2, #ff69b4);
+        }
+        
+        .fullscreen-player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+        }
+        
+        .fullscreen-video {
+            width: 100%;
+            height: 35%;
+            position: relative;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .fullscreen-video img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .video-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, transparent 100%);
+            display: flex;
+            align-items: center;
+        }
+        
+        .fullscreen-info {
+            padding: 15px;
+        }
+        
+        .fullscreen-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .fullscreen-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .fullscreen-creator {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .fullscreen-views {
+            margin-top: 5px;
+            font-size: 12px;
+            opacity: 0.7;
+            display: flex;
+            align-items: center;
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 11;
+        }
+        
+        .related-videos {
+            margin-top: 20px;
+        }
+        
+        .related-title {
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .related-item {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .related-thumbnail {
+            width: 120px;
+            height: 68px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-right: 10px;
+            position: relative;
+        }
+        
+        .related-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .related-info {
+            flex: 1;
+        }
+        
+        .related-info-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        
+        .related-info-creator {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .related-duration {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite ease-in-out;
+        }
+        
+        /* Hide scrollbar */
+        .app-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .app-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="background"></div>
+        <div class="overlay"></div>
+        
+        <!-- Main App View -->
+        <div class="app-container">
+            <div class="header">
+                <div class="logo">
+                    <span class="logo-icon"></span> MicroConf'
+                </div>
+                <div class="user-avatar">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="subtitle">.</div>
+            
+            <div class="tag-line">
+                Un laboratoire onirique où chaque voix devient trace et transmission.
+            </div>
+            
+            <div class="nav-tabs">
+                <div class="tab active">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tab-icon lucide-video">
+                        <path d="m22 8-6 4 6 4V8Z"></path>
+                        <rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect>
+                    </svg>
+                    Récents
+                </div>
+                <div class="tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tab-icon lucide-users">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    Intervenants
+                </div>
+                <div class="tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tab-icon lucide-trending-up">
+                        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                        <polyline points="16 7 22 7 22 13"></polyline>
+                    </svg>
+                    Populaires
+                </div>
+            </div>
+            
+            <div class="video-container">
+                <!-- Video Item 1 -->
+                <div class="video-item" id="video1">
+                    <div class="video-thumbnail">
+                        <div class="video-duration">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            &nbsp;5:27
+                        </div>
+                        <div class="video-play-overlay">
+                            <div class="video-play-button">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: 30%"></div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-header">
+                            <div class="avatar">
+                                <img src="assets/elle.png" alt="Dr. Emma Durant">
+                            </div>
+                            <div class="video-details">
+                                <div class="video-title">Les dimensions du rêve lucide</div>
+                                <div class="video-creator">Dr. Emma Durant</div>
+                                <div class="video-views">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="views-icon lucide lucide-eye">
+                                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    3.2k vues
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tags">
+                            <span class="category-tag">Neurosciences</span>
+                            <span class="category-tag">Rêve lucide</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Video Item 2 -->
+                <div class="video-item" id="video2">
+                    <div class="video-thumbnail">
+                        <div class="video-duration">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            &nbsp;3:42
+                        </div>
+                        <div class="video-play-overlay">
+                            <div class="video-play-button">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-header">
+                            <div class="avatar">
+                                <img src="assets/lui.png" alt="Prof. Marc Lévesque">
+                            </div>
+                            <div class="video-details">
+                                <div class="video-title">Symbolique des mondes oniriques</div>
+                                <div class="video-creator">Prof. Marc Lévesque</div>
+                                <div class="video-views">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="views-icon lucide lucide-eye">
+                                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    2.7k vues
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tags">
+                            <span class="category-tag">Psychologie</span>
+                            <span class="category-tag">Analyse</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Video Item 3 -->
+                <div class="video-item" id="video3">
+                    <div class="video-thumbnail">
+                        <div class="video-duration">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            &nbsp;6:14
+                        </div>
+                        <div class="video-play-overlay">
+                            <div class="video-play-button">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-header">
+                            <div class="avatar">
+                                <img src="/api/placeholder/40/40" alt="Luna Seraphim">
+                            </div>
+                            <div class="video-details">
+                                <div class="video-title">Journal d'une exploration onirique</div>
+                                <div class="video-creator">Luna Seraphim</div>
+                                <div class="video-views">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="views-icon lucide lucide-eye">
+                                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    1.9k vues
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tags">
+                            <span class="category-tag">Témoignage</span>
+                            <span class="category-tag">Expérience</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Video Item 4 -->
+                <div class="video-item" id="video4">
+                    <div class="video-thumbnail">
+                        <div class="video-duration">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            &nbsp;7:03
+                        </div>
+                        <div class="video-play-overlay">
+                            <div class="video-play-button">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-header">
+                            <div class="avatar">
+                                <img src="/api/placeholder/40/40" alt="Dr. Alex Chen">
+                            </div>
+                            <div class="video-details">
+                                <div class="video-title">Techniques d'induction du rêve lucide</div>
+                                <div class="video-creator">Dr. Alex Chen</div>
+                                <div class="video-views">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="views-icon lucide lucide-eye">
+                                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                                        <circle cx="12" cy="12
