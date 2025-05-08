@@ -5,16 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Grimoire des Rêves - Redesign</title>
   <style>
+       @font-face {
+          font-family: 'Inter';
+          src: url('typo/Inter.ttc') format('truetype');
+          font-weight: normal;
+          font-style: normal;
+        }
+
+
     @font-face {
       font-family: 'AVANGMI';
       src: url('typo/AVANGMI.TTF') format('truetype');
-      font-weight: normal;
-      font-style: normal;
-    }
-
-    @font-face {
-      font-family: 'MisteriRegular';
-      src: url('typo/MisteriRegular.otf') format('truetype');
       font-weight: normal;
       font-style: normal;
     }
@@ -60,7 +61,6 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: radial-gradient(ellipse at top, rgba(13, 27, 42, 0.1) 0%, rgba(0, 0, 0, 0.1) 100%);
       z-index: 0;
     }
     
@@ -107,8 +107,8 @@
     
     header {
       text-align: center;
-      padding: 0.5rem 0.5rem 1rem;
-      position: relative;
+      padding: 0.5rem 0.5rem 0.5rem; /* réduit le bas */
+      margin-bottom: 0px; /* ou 1px max */      position: relative;
       animation: fadeIn 1.5s ease-out;
     }
     
@@ -118,7 +118,7 @@
     }
     
     h1 {
-      font-family: 'AVANGMI', serif;
+      font-family: 'Barmeno', serif;
       color: #e9d5ff;
       font-size: 2.9rem;
       margin-bottom: 0.2rem;
@@ -142,10 +142,12 @@
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      font-size: 0.90rem;
+      letter-spacing: 0.5px;
       opacity: 0.9;
-      font-family: 'AVANGMI', serif;
-      font-weight: 300;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 100;
+      margin-top: 14px; /* ou 12px, 15px selon le feeling */
     }
     
     @keyframes subtitleFade {
@@ -157,51 +159,13 @@
       to { opacity: 1; }
     }
     
-    .section h2 {
-      margin-bottom: 0.8rem;
-      text-align: center;
-      font-size: 1.2rem;
-      font-weight: 500;
-      position: relative;
-      display: inline-block;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(135deg, #e6c794, #f8ecd2, #d0b675, #c19a56, #e8d6a7);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 8px rgba(212, 175, 55, 0.4), 0 0 15px rgba(194, 154, 86, 0.3), 0 0 25px rgba(233, 215, 167, 0.2);
-    }
-    
-    .section h2::after {
-      content: '';
-      position: absolute;
-      width: 70%;
-      height: 2px;
-      bottom: -8px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(135deg, #e6c794, #f8ecd2, #d0b675, #c19a56, #e8d6a7);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 8px rgba(212, 175, 55, 0.4), 0 0 15px rgba(194, 154, 86, 0.3), 0 0 25px rgba(233, 215, 167, 0.2);
-      animation: lineGrow 1.5s ease-out forwards;
-      transform-origin: center;
-      opacity: 0;
-    }
-    
-    @keyframes lineGrow {
-      0% { width: 0; opacity: 0; }
-      100% { width: 70%; opacity: 1; }
-    }
-    
+        
     /* Nouveau style de grille compacte */
     .dream-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr)); /* Cette modification garantit des colonnes égales */
         gap: 10px;
-        margin-top: 2px;
+        margin-top: 0px;
         margin-bottom: 65px;
         max-width: 320px;
         margin-left: auto;
@@ -237,7 +201,7 @@
         right: 0;
         bottom: 0;
         border-radius: 15px;
-        background: linear-gradient(135deg, rgba(139, 92, 246, 0), rgba(139, 92, 246, 0));
+        background: rgba(15, 15, 30, 0.4);
         opacity: 0;
         transition: opacity 0.4s ease;
         z-index: 1;
@@ -246,7 +210,7 @@
 
     .dream-item.selected::before {
         opacity: 0.15;
-        background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(216, 180, 254, 0.1));
+        background: rgba(15, 15, 30, 0.4);
         animation: selectedPulse 3s infinite alternate;
     }
 
@@ -261,7 +225,7 @@
         border-radius: 15px;
         width: 100%;
         height: 100%;
-        background: rgba(15, 15, 30, 0.95); /* Fond uni pour le verso */
+        background: rgba(15, 15, 30, 0.4);
         backface-visibility: hidden;
         transform: rotateY(180deg);
     }
@@ -287,6 +251,8 @@
         flex: 1;
         display: flex;
         flex-direction: column;
+        align-items: center;     /* Centrage horizontal */
+        text-align: center;      /* (optionnel) pour centrer le texte à l'intérieur */
     }
 
     .dream-actions-container {
@@ -296,15 +262,15 @@
         padding: 8px 0;
         align-items: center;
         margin-top: auto; /* Pousse les actions vers le bas */
-        border-top: 1px solid rgba(139, 92, 246, 0.1); /* Séparateur optionnel */
     }
 
     .dream-actions-container .icon-standard {
         width: 38px;
         height: 38px;
-        padding: 6px;
+        padding: 3px;
         border-radius: 50%;
         transition: all 0.3s ease;
+        background: rgba(15, 15, 30, 0.4);
         box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3);
         cursor: pointer;
     }
@@ -344,12 +310,12 @@
 
     
     .dream-title {
-      font-size: 0.9rem;
-      background: linear-gradient(135deg, #e6c794, #f8ecd2, #d0b675, #c19a56, #e8d6a7);
+      font-size: 0.7rem;
+      background: linear-gradient(#e6c794, #f8ecd2, #d0b675, #e8d6a7);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      text-shadow: 0 0 8px rgba(212, 175, 55, 0.4), 0 0 15px rgba(194, 154, 86, 0.3), 0 0 25px rgba(233, 215, 167, 0.2);
+      letter-spacing: 0.5px;
       margin-bottom: 2px;
       white-space: nowrap;
       overflow: hidden;
@@ -358,11 +324,15 @@
     
     .dream-date {
       font-size: 0.7rem;
-      color: #a5b4fc;
+      color: white;
+      letter-spacing: 1px;
       opacity: 0.8;
       display: flex;
+      letter-spacing: 0.5px;
       align-items: center;
       margin-bottom: 4px;
+      font-family: 'Inter', sans-serif;
+
     }
     
     .dream-date::before {
@@ -374,15 +344,19 @@
     .dream-tags {
       display: flex;
       flex-wrap: wrap;
+      justify-content: center; /* Ajoute ceci pour centrer horizontalement */
       gap: 4px;
+      font-family: 'Inter', sans-serif;
+
     }
     
     .dream-tag {
       font-size: 0.65rem;
       padding: 2px 6px;
       border-radius: 10px;
+      letter-spacing: 1px;
       background: rgba(139, 92, 246, 0.2);
-      color: #d8b4fe;
+      color: white;
     }
     
     .dream-actions {
@@ -390,18 +364,19 @@
       top: 5px;
       right: 5px;
       border-radius: 50%;
-      width: 26px;
-      height: 26px;
+      width: 36px;
+      height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
+      background: rgba(15, 15, 30, 0.4);
       opacity: 1;
       transition: opacity 0.3s ease;
     }
     
     .dream-actions img {
-      width: 16px;
-      height: 16px;
+      width: 26px;
+      height: 26px;
     }
 
     .dream-action-bottom {
@@ -414,34 +389,36 @@
     }
 
     .dream-action-bottom img {
-        width: 32px;
-        height: 32px;
+        width: 42px;
+        height: 42px;
         background: rgba(139, 92, 246, 0.2);
         padding: 6px;
         border-radius: 50%;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3);
+        background: rgba(15, 15, 30, 0.4);
         cursor: pointer;
     }
 
     /* Style commun pour les icônes standard */
     .dream-action-bottom .icon-standard {
-        width: 32px;
-        height: 32px;
-        background: rgba(139, 92, 246, 0.2);
+        width: 42px;
+        height: 42px;
+        background: rgba(15, 15, 30, 0.4);
         padding: 6px;
         border-radius: 50%;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3);
+        background: rgba(15, 15, 30, 0.4);
         cursor: pointer;
     }
 
     /* Effets de survol partagés */
-    .dream-action-bottom .icon-standard:hover,
-    .dream-action-bottom .icon-orb:hover {
-        background: rgba(139, 92, 246, 0.4);
-        transform: scale(1.1);
-        box-shadow: 0 6px 14px rgba(139, 92, 246, 0.5);
+    .dream-actions-container .icon-standard:hover,
+    .dream-actions-container .icon-orb:hover {
+        transform: scale(1.05);
+        background: radial-gradient(circle at center, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0));
+        box-shadow: 0 0 12px rgba(216, 180, 254, 0.3), 0 0 6px rgba(139, 92, 246, 0.2);
+        filter: brightness(1.05) blur(0.3px);
+        transition: all 0.6s ease;
     }
 
     /* Style spécifique pour l'orbe */
@@ -561,9 +538,9 @@
     /* Style pour la section avatar */
     .avatar-container {
         position: relative;
-        width: 80px;
-        height: 80px;
-        margin: 12px auto 16px;
+        width: 120px;
+        height: 120px;
+        margin: 0px auto 10px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -661,17 +638,12 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin-bottom: 10px;
-    }
-
-    /* Ajustement du titre pour donner de l'espace à l'avatar */
-    h1 {
-        margin-bottom: 0.5rem;
+        margin-bottom: 1px;
     }
 
     /* Ajuster l'espacement pour les éléments qui suivent l'avatar */
     .orb-navigation {
-        margin-top: 10px;
+        margin-top: 15px;
     }
 
     /* Animation d'entrée pour l'avatar */
@@ -724,7 +696,7 @@
       flex: 1;
       padding: 8px 0;
       text-align: center;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       color: #a5b4fc;
       transition: all 0.3s ease;
       cursor: pointer;
@@ -765,7 +737,7 @@
         left: 50%;
         transform: translate(-50%, -50%);
         width: auto;
-        height: 80%;
+        height: 100%;
         object-fit: cover;
     }
 
@@ -774,7 +746,7 @@
     display: flex;
     justify-content: space-evenly;
     padding: 5px 0 15px;
-    margin: 5px 0 15px;
+    margin: 15px 0 15px;
   }
   
     .orb-item {
@@ -794,7 +766,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-bottom: 6px;
+        margin-bottom: 3px;
         transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         border-radius: 50%;
     }
@@ -809,11 +781,13 @@
     }
 
   .orb-label {
-    color: #d8b4fe; /* même couleur que la signature */
-    font-size: 0.75rem;
+    font-family: 'AVANGMI';
+    font-size: 12px;
     text-align: center;
     font-weight: 500;
-    transition: color 0.3s ease;
+    color: #aec6f8;
+    letter-spacing: 1px;
+    animation: gradient-shift 8s ease infinite;
   }
 
     .orb-glow {
@@ -1279,7 +1253,7 @@
     /* Style pour le contenu au verso */
     .analysis-content {
         color: white;
-        font-family: 'AVANGMI', sans-serif;
+        font-family: 'Barmeno', sans-serif;
     }
 
     .analysis-stat {
@@ -1452,6 +1426,30 @@
         box-shadow: 0 0 10px rgba(139, 92, 246, 0.1);
     }
 
+    .avatar-badges {
+        position: absolute;
+        top: 105px;
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        width: 100%;
+        z-index: 4;
+    }
+
+    .badge-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        box-shadow: 0 0 6px rgba(139, 92, 246, 0.5);
+        background: radial-gradient(circle, rgba(216,180,254,0.2) 0%, rgba(0,0,0,0) 80%);
+        transition: transform 0.3s ease;
+    }
+
+    .badge-icon:hover {
+        transform: scale(1.1);
+    }
+
+
     /* Animation de comet */
     .comet {
       position: absolute;
@@ -1488,510 +1486,36 @@
     }
   </style>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        createStars();
 
-        const selectedDreams = new Set();
-        const actionBar = document.querySelector('.action-bar');
-        const actionCount = document.querySelector('.action-count');
-        const superStatsOrb = document.querySelector('.orb-item[data-section="superstats"]');
-        const superStatsAura = document.createElement('div');
-        superStatsAura.className = 'superstats-available';
-        superStatsOrb.querySelector('.orb-container').appendChild(superStatsAura);
+A REMPLIR PAR CLAUDE.AI
 
-        // Activation navigation des orbes
-        window.navigateOrbTo = function(element) {
-            const orbItems = document.querySelectorAll('.orb-item');
-            orbItems.forEach(item => item.classList.remove('active'));
-            element.classList.add('active');
-
-            element.querySelector('.orb-container').classList.add('orb-click');
-            setTimeout(() => {
-                element.querySelector('.orb-container').classList.remove('orb-click');
-            }, 300);
-
-            const section = element.dataset.section;
-            console.log(`Navigation vers section : ${section}`);
-        };
-
-        // Activation navigation du menu classique
-        window.navigateNavTo = function(element) {
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(item => item.classList.remove('active'));
-            element.classList.add('active');
-        };
-
-        // Sélectionner un rêve
-        window.toggleDreamSelection = function(element) {
-            const dreamItem = element.closest('.dream-item');
-            const dreamId = dreamItem.dataset.id;
-
-            dreamItem.classList.toggle('selected');
-
-            if (dreamItem.classList.contains('selected')) {
-                selectedDreams.add(dreamId);
-                // Animation de sélection
-                const selectIndicator = dreamItem.querySelector('.select-indicator');
-                selectIndicator.style.animation = 'none';
-                setTimeout(() => {
-                    selectIndicator.style.animation = '';
-                }, 10);
-            } else {
-                selectedDreams.delete(dreamId);
-            }
-
-            updateActionBar();
-            updateSuperStatsAvailability();
-        };
-
-        // Mettre à jour l'aura SuperStats
-        function updateSuperStatsAvailability() {
-                const wasActive = superStatsOrb.querySelector('.superstats-available') !== null;
-
-                if (selectedDreams.size >= 2) {
-                        if (!wasActive) {
-                                const superStatsAura = document.createElement('div');
-                                superStatsAura.className = 'superstats-available';
-                                superStatsOrb.querySelector('.orb-container').appendChild(superStatsAura);
-
-                                superStatsAura.classList.add('active');
-                                superStatsAura.classList.add('superstats-activate');
-                                superStatsOrb.classList.add('superstats-ready');
-
-                                setTimeout(() => {
-                                        superStatsOrb.classList.remove('superstats-ready');
-                                        superStatsAura.classList.remove('superstats-activate');
-                                }, 1000);
-
-                                if (selectedDreams.size === 2) {
-                                        navigateOrbTo(superStatsOrb);
-                                }
-                        }
-                } else {
-                        const existingAura = superStatsOrb.querySelector('.superstats-available');
-                        if (existingAura) {
-                                existingAura.remove(); // ➔ SUPPRESSION physique de l'aura
-                        }
-                        superStatsOrb.classList.remove('active'); // ➔ SUPPRESSION du glow
-                }
-        }
-
-        // Mettre à jour la barre d'action
-        function updateActionBar() {
-        }
-
-        // Désélectionner tous les rêves
-        window.clearSelection = function() {
-            document.querySelectorAll('.dream-item.selected').forEach(item => {
-                item.classList.remove('selected');
-            });
-            selectedDreams.clear();
-            updateActionBar();
-            updateSuperStatsAvailability();
-        };
-
-        // Gestion du pop-up audio
-        const audioPopup = document.querySelector('.audio-popup');
-        const audioContainer = document.querySelector('.audio-container');
-        const audioPlayBtn = document.getElementById('audio-play');
-        const audioStopBtn = document.getElementById('audio-stop');
-        const audioReturnBtn = document.getElementById('audio-return-btn');
-        const audioProgress = document.querySelector('.audio-progress');
-        const audioHandle = document.querySelector('.audio-handle');
-        const audioTimeline = document.querySelector('.audio-timeline');
-        const timeCurrentDisplay = document.querySelector('.time-current');
-        const timeTotalDisplay = document.querySelector('.time-total');
-        const audioTitle = document.querySelector('.audio-title');
-        const barsContainer = document.querySelector('.audio-bars-container');
-
-        // Créer les barres d'animation audio
-        createAudioBars();
-
-        // Variables pour simuler la lecture audio
-        let isPlaying = false;
-        let currentAudioProgress = 0;
-        let audioInterval;
-        let currentDreamTitle = '';
-
-        // Afficher le pop-up audio lorsqu'on clique sur l'icône d'écoute
-        window.listenToDream = function(element, dreamTitle) {
-                const dreamItem = element.closest('.dream-item');
-                currentDreamTitle = dreamTitle || dreamItem.querySelector('.dream-title').textContent;
-                audioTitle.textContent = currentDreamTitle;
-
-                // Réinitialiser le lecteur
-                resetAudioPlayer();
-
-                // Afficher le popup
-                audioPopup.classList.add('visible');
-
-                // Animation des barres audio en pause
-                animateBars(false);
-        };
-
-        // Masquer le pop-up audio
-        function hideAudioPopup() {
-                audioPopup.classList.remove('visible');
-                stopAudio();
-        }
-
-        // Lecture/Pause de l'audio
-        audioPlayBtn.addEventListener('click', function() {
-                if (isPlaying) {
-                        pauseAudio();
-                } else {
-                        playAudio();
-                }
-        });
-
-        // Arrêt de l'audio
-        audioStopBtn.addEventListener('click', function() {
-                stopAudio();
-        });
-
-        // Retour au grimoire
-        audioReturnBtn.addEventListener('click', function() {
-                hideAudioPopup();
-        });
-
-        // Cliquer en dehors du conteneur audio pour fermer
-        audioPopup.addEventListener('click', function(e) {
-                if (e.target === audioPopup) {
-                        hideAudioPopup();
-                }
-        });
-
-        // Gestion de la timeline
-        audioTimeline.addEventListener('click', function(e) {
-                const rect = audioTimeline.getBoundingClientRect();
-                const position = (e.clientX - rect.left) / rect.width;
-                setAudioProgress(position * 100);
-        });
-
-        // Fonction pour créer les barres d'animation audio
-        function createAudioBars() {
-                barsContainer.innerHTML = '';
-                const barCount = 40;
-
-                for (let i = 0; i < barCount; i++) {
-                        const bar = document.createElement('div');
-                        bar.className = 'audio-bar';
-
-                        // Hauteur aléatoire
-                        const height = Math.random() * 0.8 + 0.2; // Entre 20% et 100%
-                        bar.style.height = `${height * 100}%`;
-
-                        // Délai d'animation aléatoire
-                        bar.style.animationDelay = `${Math.random() * 1}s`;
-
-                        // Largeur variable pour les barres centrales
-                        const middle = barCount / 2;
-                        const distFromMiddle = Math.abs(i - middle);
-                        const maxWidth = 3;
-                        const minWidth = 2;
-                        const width = Math.max(minWidth, maxWidth - (distFromMiddle * 0.1));
-                        bar.style.width = `${width}px`;
-
-                        barsContainer.appendChild(bar);
-                }
-        }
-
-        // Fonction pour animer les barres
-        function animateBars(active) {
-                const bars = document.querySelectorAll('.audio-bar');
-
-                bars.forEach(bar => {
-                        if (active) {
-                                bar.style.animationPlayState = 'running';
-                        } else {
-                                bar.style.animationPlayState = 'paused';
-                        }
-                });
-        }
-
-        // Fonction pour mettre à jour l'affichage du temps
-        function updateTimeDisplay(currentSeconds, totalSeconds) {
-                timeCurrentDisplay.textContent = formatTime(currentSeconds);
-                timeTotalDisplay.textContent = formatTime(totalSeconds);
-        }
-
-        // Fonction pour formater le temps (de secondes à MM:SS)
-        function formatTime(seconds) {
-                const mins = Math.floor(seconds / 60);
-                const secs = Math.floor(seconds % 60);
-                return `${mins}:${secs.toString().padStart(2, '0')}`;
-        }
-
-        // Fonction pour définir la progression de l'audio
-        function setAudioProgress(percent) {
-                currentAudioProgress = percent;
-                audioProgress.style.width = `${percent}%`;
-                audioHandle.style.left = `${percent}%`;
-
-                // Mise à jour du temps affiché (simulation)
-                const totalDuration = 154; // 2:34 en secondes
-                const currentTime = (percent / 100) * totalDuration;
-                updateTimeDisplay(currentTime, totalDuration);
-        }
-
-        // Fonction pour lancer la lecture
-        function playAudio() {
-                isPlaying = true;
-                audioPlayBtn.querySelector('img').src = 'assets/play.png'; // Idéalement, utilisez une icône pause
-
-                // Animer les barres
-                animateBars(true);
-
-                // Simuler la progression de la lecture
-                audioInterval = setInterval(() => {
-                        if (currentAudioProgress >= 100) {
-                                stopAudio();
-                                return;
-                        }
-
-                        currentAudioProgress += 0.5;
-                        setAudioProgress(currentAudioProgress);
-                }, 500);
-        }
-
-        // Fonction pour mettre en pause
-        function pauseAudio() {
-                isPlaying = false;
-                audioPlayBtn.querySelector('img').src = 'assets/play.png';
-
-                // Mettre en pause l'animation des barres
-                animateBars(false);
-
-                // Arrêter la progression simulée
-                clearInterval(audioInterval);
-        }
-
-        // Fonction pour arrêter la lecture
-        function stopAudio() {
-                isPlaying = false;
-                audioPlayBtn.querySelector('img').src = 'assets/play.png';
-
-                // Réinitialiser la progression
-                currentAudioProgress = 0;
-                setAudioProgress(0);
-
-                // Arrêter l'animation des barres
-                animateBars(false);
-
-                // Arrêter la progression simulée
-                clearInterval(audioInterval);
-        }
-
-        // Réinitialiser le lecteur audio
-        function resetAudioPlayer() {
-                stopAudio();
-                updateTimeDisplay(0, 154); // 2:34 en secondes
-        }
-
-        // Fonction pour gérer l'analyse d'une carte
-        function initializeCardAnalysis() {
-                const analyzeButtons = document.querySelectorAll('.icon-standard[data-action="analyze"]');
-                const perspectiveContainer = document.querySelector('.perspective-container');
-                const closeButton = document.querySelector('.close-analysis');
-
-                analyzeButtons.forEach(button => {
-                        button.addEventListener('click', (e) => {
-                                e.stopPropagation();
-                                const dreamCard = button.closest('.dream-item');
-                                const cardClone = dreamCard.cloneNode(true);
-                                
-                                // Préparer la carte pour l'animation
-                                cardClone.classList.add('analyzing');
-                                
-                                // Créer la structure front/back
-                                const cardFront = document.createElement('div');
-                                cardFront.className = 'card-front';
-
-                                // Copier les enfants de dreamCard dans cardFront
-                                [...dreamCard.children].forEach(child => {
-                                        cardFront.appendChild(child.cloneNode(true));
-                                });
-
-                                const cardBack = document.createElement('div');
-                                cardBack.className = 'card-back';
-                                cardBack.innerHTML = `
-                                        <div class="stats-content">
-                                                <h3>Analyse du Rêve</h3>
-                                                <div class="stats-item">Durée: 8 heures</div>
-                                                <div class="stats-item">Clarté: 85%</div>
-                                                <div class="stats-item">Émotions: Positives</div>
-                                                <div class="stats-item">Thèmes principaux: Nature, Mystère</div>
-                                        </div>
-                                `;
-
-                                // Conteneur de la carte à double face avec perspective propre
-                                const flipContainer = document.createElement('div');
-                                flipContainer.className = 'flip-container';
-                                flipContainer.style.perspective = '1000px';
-
-                                const flipper = document.createElement('div');
-                                flipper.className = 'flipper';
-                                flipper.style.transformStyle = 'preserve-3d';
-                                flipper.style.transition = 'transform 1s';
-                                flipper.style.transform = 'rotateY(180deg)';
-
-                                flipper.appendChild(cardFront);
-                                flipper.appendChild(cardBack);
-                                flipContainer.appendChild(flipper);
-
-                                // Afficher la carte dans la perspective
-                                perspectiveContainer.innerHTML = '';
-                                perspectiveContainer.appendChild(flipContainer);
-                                perspectiveContainer.classList.add('active');
-                        });
-                });
-
-                // Fermer l'analyse
-                closeButton.addEventListener('click', () => {
-                        perspectiveContainer.classList.remove('active');
-                });
-
-                // Fermer l'analyse en cliquant en dehors de la carte
-                perspectiveContainer.addEventListener('click', (e) => {
-                        if (e.target === perspectiveContainer) {
-                                perspectiveContainer.classList.remove('active');
-                        }
-                });
-        }
-
-        // Initialiser l'analyse des cartes quand le DOM est chargé
-        document.addEventListener('DOMContentLoaded', initializeCardAnalysis);
-
-        // Fonction pour démarrer l'analyse
-        function startAnalysis(dreamCard) {
-                const overlay = document.createElement('div');
-                overlay.className = 'analysis-overlay';
-                document.body.appendChild(overlay);
-
-                const closeButton = document.createElement('button');
-                closeButton.className = 'close-analysis';
-                closeButton.innerHTML = '×';
-                overlay.appendChild(closeButton);
-
-                dreamCard.classList.add('analyzing');
-                overlay.classList.add('visible');
-
-                // Gestionnaire pour fermer l'analyse
-                function closeAnalysis() {
-                        dreamCard.classList.remove('analyzing');
-                        overlay.classList.remove('visible');
-                        setTimeout(() => overlay.remove(), 400); // Attendre la fin de l'animation
-                }
-
-                closeButton.addEventListener('click', closeAnalysis);
-                overlay.addEventListener('click', (e) => {
-                        if (e.target === overlay) closeAnalysis();
-                });
-        }
-
-        // Ajouter les écouteurs d'événements aux boutons d'analyse
-        document.querySelectorAll('.analyze-button').forEach(button => {
-                button.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const dreamCard = e.target.closest('.dream-item');
-                        if (dreamCard) {
-                                startAnalysis(dreamCard);
-                        }
-                });
-        });
-
-
-        // Créer les étoiles
-        function createStars() {
-            const starsContainer = document.querySelector('.stars');
-            const starCount = 100;
-
-            for (let i = 0; i < starCount; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-
-                star.style.left = `${Math.random() * 100}%`;
-                star.style.top = `${Math.random() * 100}%`;
-
-                const size = Math.random() * 2 + 1;
-                star.style.width = `${size}px`;
-                star.style.height = `${size}px`;
-
-                star.style.animationDelay = `${Math.random() * 8}s`;
-
-                starsContainer.appendChild(star);
-            }
-        }
-
-        // Créer les comètes
-        function createComet() {
-            const comet = document.createElement('div');
-            comet.className = 'comet';
-
-            const startX = Math.random() * window.innerWidth;
-            const startY = -50;
-
-            comet.style.top = `${startY}px`;
-            comet.style.left = `${startX}px`;
-
-            document.querySelector('.phone-container').appendChild(comet);
-
-            setTimeout(() => {
-                comet.remove();
-            }, 8000);
-        }
-
-        setInterval(createComet, 12000);
-
-        // Analyse des rêves sélectionnés
-        window.analyzeDreams = function() {
-            alert(`Analyse de ${selectedDreams.size} rêves en cours...`);
-        };
-
-        // Filtrer les rêves
-        window.filterDreams = function(filterElement) {
-            const filters = document.querySelectorAll('.filter-chip');
-            filters.forEach(f => f.classList.remove('active'));
-            filterElement.classList.add('active');
-
-            const filterType = filterElement.dataset.filter;
-            console.log(`Filtrage par : ${filterType}`);
-        };
-
-        // Navigation dans le menu
-        window.navigateTo = function(navElement) {
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(item => item.classList.remove('active'));
-            navElement.classList.add('active');
-
-            const section = navElement.dataset.section;
-            console.log(`Navigation vers : ${section}`);
-        };
-
-        // Ajouter un nouveau rêve
-        window.addNewDream = function() {
-            alert('Ajouter un nouveau rêve');
-        };
-    });
   </script>
 </head>
 <body>
   <div class="phone-container">
     <div class="notch"></div>
     <div class="status-bar">
-      <div>21:37</div>
-      <div>📶 📱 🔋</div>
+      <div></div>
+      <div></div>
     </div>
     <div class="app-content">
       <div class="stars"></div>
       <header>
-            <h1>&nbsp;</h1>
+            <h1></h1>
             <!-- Nouveau conteneur pour l'avatar -->
             <div class="avatar-container">
-                  <div class="avatar-aura"></div>
-                  <div class="avatar-outer-glow"></div>
-                  <img src="assets/Avatar3.png" alt="Avatar" class="avatar-image">
-                  <div class="avatar-inner-ring"></div>
+                <div class="avatar-aura"></div>
+                <div class="avatar-outer-glow"></div>
+
+                <!-- Badges au-dessus de l'avatar -->
+                <div class="avatar-badges">
+                    <img src="assets/badge_100.png" alt="Badge 100" class="badge-icon">
+                    <img src="assets/badge_fullmoon.png" alt="Badge Pleine Lune" class="badge-icon">
+                    <img src="assets/badge_premium.png" alt="Badge Premium" class="badge-icon">
+                </div>
+
+                <img src="assets/Avatar3.png" alt="Avatar" class="avatar-image">
+                <div class="avatar-inner-ring"></div>
             </div>
             <p class="subtitle">"Tes désirs se défendent contre tes désirs..."</p>
       </header>
@@ -2003,7 +1527,7 @@
                         <img src="assets/orbe_cartes.png" alt="Cartes Mystiques">
                         <div class="orb-glow"></div>
                   </div>
-                  <span class="orb-label">Cartes Mystiques</span>
+                  <span class="orb-label">AstroCartes</span>
             </div>
             <div class="orb-item" data-section="favorites" onclick="navigateOrbTo(this)">
                   <div class="orb-container">
@@ -2059,7 +1583,7 @@
                                                 <div class="select-indicator" onclick="toggleDreamSelection(this)"></div>
                                                 <div class="dream-thumb">
                                                                 <video autoplay muted loop playsinline width="400" height="320">
-                                                                                <source src="assets/bulle_aile_grimoire.webm" type="video/webm">
+                                                                                <source src="assets/bulle_pleine_lune.webm" type="video/webm">
                                                                                 Ton navigateur ne supporte pas la vidéo HTML5.
                                                                 </video>
                                                 </div>
@@ -2084,7 +1608,7 @@
                                                 <div class="select-indicator" onclick="toggleDreamSelection(this)"></div>
                                                 <div class="dream-thumb">
                                                                 <video autoplay muted loop playsinline width="400" height="320">
-                                                                                <source src="assets/bulle_aile_grimoire.webm" type="video/webm">
+                                                                                <source src="assets/bulle_rêve_semaine.webm" type="video/webm">
                                                                                 Ton navigateur ne supporte pas la vidéo HTML5.
                                                                 </video>
                                                 </div>
