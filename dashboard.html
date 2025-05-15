@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Dashboard Onirique</title>
+
+  <style>
+    @font-face {
+      font-family: 'AVANGMI';
+      src: url('typo/AVANGMI.TTF') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: 'MisteriRegular';
+      src: url('typo/MisteriRegular.otf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+
+    :root {
+      --primary-glow: rgba(144, 85, 255, 0.8);
+      --secondary-glow: rgba(87, 252, 198, 0.8);
+      --accent-color: #57fcc6;
+      --dark-bg: #0c0c14;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      background: var(--dark-bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'AVANGMI', sans-serif;
+      overflow: hidden;
+      color: white;
+    }
+
+    .phone-container {
+      width: 100%;
+      height: 100%;
+      max-width: 430px;
+      max-height: 800px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 30px;
+      box-shadow: 0 0 50px rgba(101, 56, 243, 0.4);
+      background: url('./assets/fond3.png') no-repeat center center;
+      background-size: cover;
+    }
+
+    @media (max-width: 450px) {
+      .phone-container {
+        border-radius: 0;
+        max-width: 100%;
+        max-height: 100%;
+        box-shadow: none;
+      }
+    }
+
+    .stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0;
+      animation: twinkle 5s infinite;
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0; }
+      50% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+
+    .blur-circles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .blur-circle {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(50px);
+      opacity: 0.6;
+      z-index: 2;
+      animation: slowly-move 20s infinite alternate ease-in-out;
+    }
+
+    @keyframes slowly-move {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(20px, 20px); }
+    }
+
+    .profil-icon {
+      position: absolute;
+      top: max(20px, env(safe-area-inset-top));
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.3s ease;
+      background: rgba(12, 12, 20, 0.4);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 50%;
+      box-shadow: 0 0 15px rgba(144, 85, 255, 0.3);
+      padding: 5px;
+    }
+
+    .profil-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .profil-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .avatar-container {
+      position: absolute;
+      top: max(60px, calc(env(safe-area-inset-top) + 40px));
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin-bottom: 20px;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .avatar-img {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      object-fit: cover;
+      box-shadow: 0 0 25px var(--primary-glow);
+    }
+
+    .avatar-aura {
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      width: calc(100% + 16px);
+      height: calc(100% + 16px);
+      border-radius: 50%;
+      border: 4px solid transparent;
+      border-top: 4px solid rgba(161, 127, 255, 0.9);
+      border-right: 4px solid rgba(161, 127, 255, 0.3);
+      filter: drop-shadow(0 0 10px rgba(161, 127, 255, 0.7));
+      animation: rotateAura 8s linear infinite;
+    }
+
+    .avatar-glow {
+      position: absolute;
+      top: -15px;
+      left: -15px;
+      width: calc(100% + 30px);
+      height: calc(100% + 30px);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(144, 85, 255, 0.5) 0%, rgba(144, 85, 255, 0) 70%);
+      z-index: -1;
+      animation: pulse-glow 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.1); }
+      100% { opacity: 0.5; transform: scale(1); }
+    }
+
+    @keyframes rotateAura {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Correction pour la signature */
+    .signature {
+        font-family: 'MisteriRegular', serif;
+        font-size: 25px;
+        background: linear-gradient(90deg, #a17fff, #57fcc6, #a17fff);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 15px var(--primary-glow), 0 0 8px rgba(255, 255, 255, 0.4);
+        letter-spacing: 1px;
+        line-height: 1.2;
+        opacity: 1;
+        text-align: center;
+        width: 100%;       /* Définit la largeur à 100% */
+        max-width: 350px;  /* Une limite maximale plus grande */
+        margin: 0 auto;    /* Centre le bloc */
+        padding: 0 15px;   /* Réduit un peu le padding */
+        box-sizing: border-box; /* S'assure que le padding est inclus dans la largeur */
+        position: relative;
+        animation: gradient-shift 8s ease infinite;
+        word-wrap: break-word; /* Permet de gérer les mots longs */
+    }
+
+    @keyframes gradient-shift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .signature-particle {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: white;
+        border-radius: 50%;
+        pointer-events: none;
+        opacity: 0;
+        box-shadow: 0 0 8px 2px var(--secondary-glow);
+        animation: particle-fade 4s ease-in-out infinite;
+    }
+
+    @keyframes particle-fade {
+        0% { opacity: 0; transform: translateY(0) scale(0); }
+        50% { opacity: 0.8; transform: translateY(-20px) scale(1); }
+        100% { opacity: 0; transform: translateY(-40px) scale(0); }
+    }
+
+
+    .magic-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300px;
+      height: 300px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .magic-circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      opacity: 0.5;
+    }
+
+    .magic-circle:nth-child(1) {
+      animation: rotate-circle 30s linear infinite;
+    }
+
+    .magic-circle:nth-child(2) {
+      width: 220px;
+      height: 220px;
+      animation: rotate-circle-reverse 25s linear infinite;
+    }
+
+    .magic-circle:nth-child(3) {
+      width: 160px;
+      height: 160px;
+      animation: rotate-circle 20s linear infinite;
+    }
+
+    @keyframes rotate-circle {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    @keyframes rotate-circle-reverse {
+      0% { transform: translate(-50%, -50%) rotate(360deg); }
+      100% { transform: translate(-50%, -50%) rotate(0deg); }
+    }
+
+    .orbe-wrapper {
+      position: absolute;
+      bottom: 150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 110px;
+      z-index: 10;
+    }
+
+    .orbe-principal {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      position: relative;
+      z-index: 11;
+      box-shadow: 0 0 20px rgba(120, 200, 255, 0.4);
+    }
+
+    .orbe-principal img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      animation: subtle-pulse 3s infinite ease-in-out;
+    }
+
+    @keyframes subtle-pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .orbe-principal:hover {
+      transform: scale(1.05);
+    }
+
+    .orbe-principal:active {
+      transform: scale(0.95);
+    }
+
+    .orbe-label {
+      font-family: 'AVANGMI', serif;
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 18px;
+      color: #aec6f8;
+      letter-spacing: 1px;
+      animation: gradient-shift 8s ease infinite;
+      text-align: center;
+  }
+
+    .aura {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      width: calc(100% + 20px);
+      height: calc(100% + 20px);
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top: 3px solid rgba(95, 175, 250, 0.9);   /* Bordure principale, intense */
+      border-right: 3px solid rgba(120, 200, 255, 0.2); /* Plus clair, presque éthéré */
+      filter: drop-shadow(0 0 10px var(--secondary-glow));
+      animation: spinAura 3s linear infinite;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .inner-aura {
+      position: absolute;
+      top: -20px;
+      left: -20px;
+      width: calc(100% + 40px);
+      height: calc(100% + 40px);
+      border-radius: 50%;
+      border: 2px solid transparent;
+      border-top: 2px solid rgba(100, 170, 255, 0.7);   /* Bleu électrique adouci */
+      border-left: 2px solid rgba(100, 170, 255, 0.3);  /* Même teinte, plus légère */
+      filter: drop-shadow(0 0 6px var(--secondary-glow));
+      animation: spinAuraReverse 5s linear infinite;
+      z-index: 9;
+      pointer-events: none;
+    }
+
+    @keyframes spinAura {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes spinAuraReverse {
+      0% { transform: rotate(360deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    .orbes-secondaires {
+      position: absolute;
+      bottom: max(40px, calc(env(safe-area-inset-bottom) + 20px));
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      z-index: 10;
+      padding: 0 20px;
+    }
+
+    .orbe {
+      position: relative;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 11;
+      box-shadow: 0 0 20px rgba(120, 200, 255, 0.4);
+    }
+
+    .orbe img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .orbe:hover {
+      transform: translateY(-8px);
+    }
+
+    .orbe:active {
+      transform: translateY(0) scale(0.95);
+    }
+
+  .orbe-label-small {
+      font-family: 'AVANGMI', serif;
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 16px;
+        border-radius: 50%;
+        box-shadow: 0 0 20px 8px rgba(151, 87, 205, 0.4);
+      letter-spacing: 1px;
+      white-space: nowrap;
+      animation: gradient-shift 8s ease infinite;
+      text-align: center;
+
+  }
+
+    .orbe.active {
+        border-radius: 50%;
+        box-shadow: 0 0 20px 8px rgba(151, 87, 205, 0.4);
+    }
+
+    .orbe.active::before {
+      content: "";
+      position: absolute;
+        border-radius: 50%;
+        box-shadow: 0 0 20px 8px rgba(151, 87, 205, 0.4);
+      animation: spinAura 2s linear infinite;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .orbe:first-child,
+    .orbe:last-child {
+      margin-top: -15px;
+    }
+
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--dark-bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 2s ease-out;
+    }
+
+    .loading-video {
+      width: 180px;
+      height: auto;
+      border-radius: 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes ripple-effect {
+      to {
+        transform: scale(3);
+        opacity: 0;
+      }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); opacity: 0.8; }
+    }
+
+    /* Support for iPhone notch */
+    @supports (padding: max(0px)) {
+      .phone-container {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="loading-screen">
+    <video autoplay muted loop playsinline class="loading-video">
+      <source src="assets/bulle_aile_grimoire.webm" type="video/webm">
+      Votre navigateur ne supporte pas la vidéo HTML5.
+    </video>
+  </div>
+
+  <div class="phone-container">
+    <div class="stars" id="stars"></div>    
+    <div class="blur-circles">
+      <div class="blur-circle" style="width: 250px; height: 250px; top: -50px; left: -50px; background: rgba(128, 0, 255, 0.35);"></div>
+      <div class="blur-circle" style="width: 300px; height: 300px; bottom: -100px; right: -70px; background: rgba(0, 150, 255, 0.35);"></div>
+      <div class="blur-circle" style="width: 200px; height: 200px; top: 300px; left: -70px; background: rgba(255, 0, 150, 0.25);"></div>
+    </div>
+
+    <div class="magic-container">
+      <div class="magic-circle"></div>
+      <div class="magic-circle"></div>
+      <div class="magic-circle"></div>
+    </div>
+    
+    <div class="profil-icon" id="profileBtn">
+      <img src="./assets/icone_10.png" alt="Profil">
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-wrapper">
+        <div class="avatar-glow"></div>
+        <img src="./assets/Avatar_3.png" alt="Avatar" class="avatar-img">
+        <div class="avatar-aura"></div>
+      </div>
+      <span class="signature"></span>
+    </div>
+    
+    <div class="orbe-wrapper" id="orbeWrapper">
+      <div class="orbe-principal" id="recordBtn">
+        <img src="./assets/orbe_enregistrer.png" alt="Enregistrer">
+      </div>
+      <div class="orbe-label">Enregistrer</div>
+    </div>
+
+    <div class="orbes-secondaires">
+        <div class="orbe" id="GrimoireBtn">
+            <img src="./assets/orbe_grimoire.png" alt="Grimoire">
+            <div class="orbe-label-small">Grimoire</div>
+        </div>
+        <div class="orbe" id="KoalabBtn">
+            <img src="./assets/orbe_koalab.png" alt="Koa'lab">
+            <div class="orbe-label-small">Koa'lab</div>
+        </div>
+        <div class="orbe" id="DicoBtn">
+            <img src="./assets/dico.png" alt="Dictionnaire">
+            <div class="orbe-label-small">Dico</div>
+        </div>
+        <div class="orbe" id="RevariumBtn">
+            <img src="./assets/orbe_revarium.png" alt="Rêvarium">
+            <div class="orbe-label-small">Rêvarium</div>
+        </div>
+    </div>
+  </div>
+
+  <script>
+
+    // Créer des étoiles dans le ciel
+    document.addEventListener('DOMContentLoaded', function() {
+      const starsContainer = document.getElementById('stars');
+      const numStars = 200;
+      
+      for (let i = 0; i < numStars; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        
+        // Position aléatoire
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        
+        // Taille aléatoire
+        const size = Math.random() * 2 + 1;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        
+        // Délai d'animation aléatoire
+        star.style.animationDelay = `${Math.random() * 5}s`;
+        
+        starsContainer.appendChild(star);
+      }
+      
+      // Masquer l'écran de chargement après un court délai
+      setTimeout(() => {
+        const loadingScreen = document.querySelector('.loading-screen');
+        loadingScreen.style.opacity = '0';
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+        }, 1000);
+      }, 1500);
+    });
+
+    // Déboguer les chargements d'images
+    document.addEventListener('DOMContentLoaded', function() {
+      const images = document.querySelectorAll('img');
+      images.forEach(img => {
+        img.addEventListener('error', function() {
+          console.error('Erreur de chargement pour l\'image:', img.src);
+          img.style.border = '2px solid red';
+          img.style.backgroundColor = 'pink';
+        });
+        
+        img.addEventListener('load', function() {
+          console.log('Image chargée avec succès:', img.src);
+        });
+      });
+    });
+
+    // Gérer l'état de l'orbe principal
+    const orbePrincipal = document.getElementById('recordBtn');
+    const orbeWrapper = document.getElementById('orbeWrapper');
+    
+    orbePrincipal.addEventListener('click', function(e) {
+      // Ajouter effet de ripple
+      createRippleEffect(e);
+      
+      // Vérifier si l'aura existe déjà
+      const existingAura = orbeWrapper.querySelector('.aura');
+      const existingInnerAura = orbeWrapper.querySelector('.inner-aura');
+      
+      if (existingAura) {
+        existingAura.remove();
+        if (existingInnerAura) existingInnerAura.remove();
+      } else {
+        // Créer une aura externe
+        const auraDiv = document.createElement('div');
+        auraDiv.className = 'aura';
+        orbeWrapper.insertBefore(auraDiv, orbePrincipal);
+        
+        // Créer une aura interne
+        const innerAuraDiv = document.createElement('div');
+        innerAuraDiv.className = 'inner-aura';
+        orbeWrapper.insertBefore(innerAuraDiv, orbePrincipal);
+      }
+    });
+
+    // Gestion des orbes secondaires
+    const orbeBtns = document.querySelectorAll('.orbe');
+    orbeBtns.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        createRippleEffect(e);
+        this.classList.toggle('active');
+      });
+    });
+
+    // Effet de ripple (ondulation) sur les clics
+    function createRippleEffect(event) {
+      const button = event.currentTarget;
+      const rect = button.getBoundingClientRect();
+      
+      const ripple = document.createElement('div');
+      ripple.className = 'ripple';
+      ripple.style.left = `${event.clientX - rect.left}px`;
+      ripple.style.top = `${event.clientY - rect.top}px`;
+      
+      button.appendChild(ripple);
+      
+      setTimeout(() => {
+        ripple.remove();
+      }, 1000);
+    }
+
+    // Animation de survol
+    document.querySelectorAll('.orbe, .orbe-principal, .profil-icon').forEach(el => {
+      el.addEventListener('mouseenter', function() {
+        this.style.animation = 'pulse 1.5s infinite ease-in-out';
+      });
+      
+      el.addEventListener('mouseleave', function() {
+        this.style.animation = '';
+      });
+    });
+
+    // Support tactile pour les dispositifs mobiles
+    document.addEventListener('touchstart', function() {
+      // Ajouter la classe active pour l'état tactile
+    }, false);
+    
+    // Gérer l'orientation de l'appareil
+    window.addEventListener('orientationchange', function() {
+      // Ajuster l'interface en fonction de l'orientation
+    });
+
+    // Détecter le système d'exploitation pour ajustements spécifiques
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isAndroid = /Android/.test(navigator.userAgent);
+    
+    if (isIOS) {
+      document.body.classList.add('ios-device');
+    } else if (isAndroid) {
+      document.body.classList.add('android-device');
+    }
+
+
+  </script>
+</body>
+</html>
